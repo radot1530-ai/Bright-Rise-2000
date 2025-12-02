@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin - KayLakay</title>
+  <link rel="stylesheet" href="/static/style.css">
+<style>
+body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: darkorange;
+      margin-bottom: 25px;
+    }
+
+    .admin-panel {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .admin-section {
+      display: none;
+    }
+
+    .admin-section.active {
+      display: block;
+    }
+
+    label {
+      display: block;
+      margin: 5px 0 2px;
+      font-weight: bold;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    button {
+      background: darkorange;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .anons-list {
+      margin-top: 20px;
+    }
+
+    .anons-item {
+      background: #fff8f2;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .anons-item strong { color: #e65c00; }
+
+    .remove-btn {
+      background: crimson;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+
+    .remove-btn:hover { opacity: 0.8; }
+
+    .success {
+      color: green;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .login-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 300px;
+      margin: 20px auto;
+    }
+
+    .demand-card {
+      background: #fff8f2;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .hidden { display: none; }
+
+    .whatsapp-btn {
+      display: inline-block;
+      background: green;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      margin-top: 5px;
+    }
+</style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo-container">
+      <img src="/image/Screenshot_20251030-162215.png" alt="KayLakay Logo" class="logo-img">
+  </div>
+  <h2 style="color:white; text-align:center;">Paj Administratè</h2>
+</header>
+
+<main>
+<section id="login-section" class="admin-section active">
+  <h2 style="text-align:center;">Login Administratè</h2>
+  <div class="login-box">
+    <input type="text" id="admin-username" placeholder="Non itilizatè">
+    <input type="password" id="admin-password" placeholder="Modpas">
+    <button id="login-btn">Antre</button>
+  </div>
+</section>
+
+<section id="admin-dashboard" class="admin-section">
+  <h1>📋 Paj Admin - KayLakay</h1>
+  <div class="admin-panel">
+    <!-- WhatsApp Admin -->
+    <div>
+      <label>Lyen WhatsApp:</label>
+      <input type="text" id="whatsappLink" placeholder="https://wa.me/509xxxxxxx">
+      <button id="saveWhatsApp">💾 Sove Lyen</button>
+      <div id="whatsappSaved" class="success"></div>
+    </div>
+
+    <!-- Ajoute anons -->
+    <div>
+      <label>Kategori :</label>
+      <select id="categorie">
+        <option value="kay">Kay</option>
+        <option value="Tè">Tè</option>
+        <option value="Sèvis">Sèvis</option>
+      </select>
+      <label>Tit :</label>
+      <input type="text" id="titre">
+      <label>Pri :</label>
+      <input type="text" id="prix">
+      <label>Adrès :</label>
+      <input type="text" id="adresse">
+      <label>Deskripsyon :</label>
+      <textarea id="description"></textarea>
+      <label>Chwazi foto:</label>
+      <input type="file" id="paymentFile">
+      <img id="previewImg" style="width:200px;">
+      <button id="ajouterAnons">➕ Mete anons</button>
+      <div id="ajouteSuccess" class="success"></div>
+    </div>
+
+    <!-- Lis anons -->
+    <h3>📜 Lis Anons</h3>
+    <div id="anonsList"></div>
+
+    <!-- Lis demann -->
+    <h3>📋 Demann Lwe Kay</h3>
+    <div id="demandListContainer"></div>
+
+    <button onclick="logoutAdmin()">🚪 Dekonekte</button>
+  </div>
+</section>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+  </html>
