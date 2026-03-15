@@ -10,7 +10,6 @@ POPUP SYSTEM
 *************************/
 
 function showMessage(text){
-
 const box=document.createElement("div");
 box.className="popup-overlay";
 
@@ -32,12 +31,9 @@ content.appendChild(btn);
 box.appendChild(content);
 
 document.body.appendChild(box);
-
 }
 
-
 function askInput(text){
-
 return new Promise(resolve=>{
 
 const box=document.createElement("div");
@@ -56,13 +52,9 @@ const btn=document.createElement("button");
 btn.innerText="OK";
 
 btn.onclick=function(){
-
 const value=input.value;
-
 document.body.removeChild(box);
-
 resolve(value);
-
 };
 
 content.appendChild(p);
@@ -74,12 +66,10 @@ box.appendChild(content);
 document.body.appendChild(box);
 
 });
-
 }
 
-
 /*************************
-EMAIL VERIFICATION
+CREATE ACCOUNT
 *************************/
 
 async function createAccount(email,password){
@@ -100,23 +90,50 @@ console.log(err);
 
 if(err.code==="auth/email-already-in-use"){
 
+try{
+
+const login = await auth.signInWithEmailAndPassword(email,password);
+
+const user = login.user;
+
+await user.reload();
+
+if(!user.emailVerified){
+
+await user.delete();
+
+showMessage("Nou retire ansyen enskripsyon ki pa verifye. Eseye ankò.");
+
+return false;
+
+}else{
+
+showMessage("Email sa deja gen yon kont ❌");
+
+return false;
+
+}
+
+}catch(e){
+
 showMessage("Email deja itilize ❌");
 
+return false;
+
 }
+
+}
+
 else if(err.code==="auth/invalid-email"){
-
 showMessage("Email pa valab ❌");
-
 }
+
 else if(err.code==="auth/weak-password"){
-
 showMessage("Modpas twò fèb ❌");
-
 }
+
 else{
-
 showMessage("Erè kreye kont ❌");
-
 }
 
 return false;
@@ -125,6 +142,9 @@ return false;
 
 }
 
+/*************************
+CHECK EMAIL VERIFIED
+*************************/
 
 async function checkEmailVerified(){
 
@@ -135,19 +155,13 @@ if(!user) return false;
 await user.reload();
 
 if(user.emailVerified){
-
 return true;
-
 }else{
-
 showMessage("Tanpri verifye email ou avan");
-
 return false;
-
 }
 
 }
-
 
 /*************************
 MONCASH PAYMENT
@@ -158,37 +172,29 @@ async function payMonCash(phone){
 try{
 
 const response = await fetch("https://YOURSERVER.com/pay",{
-
 method:"POST",
-
 headers:{
 "Content-Type":"application/json"
 },
-
-body:JSON.stringify({phone:phone,amount:100})
-
+body:JSON.stringify({
+phone:phone,
+amount:100
+})
 });
 
 const data = await response.json();
 
 if(data.success){
-
 showMessage("Peman reyisi ✔");
-
 return true;
-
 }else{
-
 showMessage("Peman echwe ❌");
-
 return false;
-
 }
 
 }catch(err){
 
 console.log(err);
-
 showMessage("Erè MonCash");
 
 return false;
@@ -197,18 +203,17 @@ return false;
 
 }
 
-
 /*************************
 SIGNUP
 *************************/
 
 async function signup(){
 
-const name = val("name");
-const lastname = val("lastname");
-const pseudo = val("pseudo");
-const serie = val("serie");
-const email = val("contact");
+const name=val("name");
+const lastname=val("lastname");
+const pseudo=val("pseudo");
+const serie=val("serie");
+const email=val("contact");
 
 if(!pseudo || !email || !serie){
 
@@ -217,7 +222,6 @@ status("Ranpli tout chan yo","red");
 return;
 
 }
-
 
 /* verify pseudo */
 
@@ -234,7 +238,6 @@ return;
 
 }
 
-
 /* verify email nan database sèlman */
 
 const snapEmail = await db.ref("users")
@@ -249,7 +252,6 @@ status("Email sa deja enskri ❌","red");
 return;
 
 }
-
 
 /* PASSWORD */
 
@@ -267,18 +269,15 @@ showMessage("Modpas twò kout ❌");
 
 }while(!password || password.length<6);
 
-
 /* CREATE ACCOUNT */
 
 const created = await createAccount(email,password);
 
 if(!created) return;
 
-
 /* WAIT EMAIL VERIFICATION */
 
 await askInput("Apre ou verifye email la nan Gmail, tape OK");
-
 
 const verified = await checkEmailVerified();
 
@@ -287,15 +286,12 @@ if(!verified){
 const user = auth.currentUser;
 
 if(user){
-
-await user.delete(); // efase kont ki pa verifye
-
+await user.delete();
 }
 
 return;
 
 }
-
 
 /* MONCASH */
 
@@ -305,13 +301,11 @@ const paid = await payMonCash(phone);
 
 if(!paid) return;
 
-
 /* SAVE USER */
 
 const uid = auth.currentUser.uid;
 
 const user={
-
 name,
 lastname,
 pseudo,
@@ -320,44 +314,31 @@ email,
 points:0,
 verified:true,
 createdAt:Date.now()
-
 };
-
 
 await db.ref("users/"+uid).set(user);
 
-
 localStorage.setItem("ns4_user",JSON.stringify(user));
 
-
 status("Kont kreye ✔","green");
-
 
 setTimeout(()=>location="home.html",1000);
 
 }
-
 
 /*************************
 HELPERS
 *************************/
 
 function val(id){
-
 return document.getElementById(id).value.trim();
-
 }
 
 function status(msg,color){
-
 const s=document.getElementById("status");
-
 s.innerText=msg;
-
 s.style.color=color;
-
 }
-
 
 /*************************
 INIT
@@ -365,6 +346,7 @@ INIT
 
 document.addEventListener("DOMContentLoaded",function(){
 
-document.getElementById("signupBtn").addEventListener("click",signup);
+document.getElementById("signupBtn")
+.addEventListener("click",signup);
 
 });
