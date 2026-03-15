@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NS4 - Enskripsyon</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h1>NS4 Edu App</h1>
+<p>Kreye kont ou</p>
+
+<input type="text" id="name" placeholder="Non">
+<input type="text" id="lastname" placeholder="Siyati">
+<input type="text" id="pseudo" placeholder="Pseudo">
+
+<select id="serie">
+<option value="">Chwazi Seri</option>
+<option>SMP</option>
+<option>LLA</option>
+<option>SVT</option>
+<option>SES</option>
+</select>
+
+<input type="email" id="contact" placeholder="Email">
+
+<button id="signupBtn">Enskri</button>
+
+<p id="status"></p>
+
+<p>Ou deja gen kont ?</p>
+<button onclick="goLogin()">Konekte</button>
+
+</div>
+
+<script>
+
+function goLogin(){
+
+if(!navigator.onLine){
+alert("Pa gen entènèt ❌");
+return;
+}
+
+location="login.html";
+
+}
+
+</script>
+<!-- Nouvèl (v4) -->
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init({
+        publicKey: "YOUR_PUBLIC_KEY",
+      });
+   })();
+</script>
+
+
+<script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-database-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="signups.js"></script>
+
+</body>
+</html>
