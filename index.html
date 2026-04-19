@@ -1,74 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="ht">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NS4 - Enskripsyon</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Plis ∞ | Fòmasyon Kreye Sit Entènèt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        .promo-card { border: 2px dashed #3b82f6; }
+        /* Retire flèch natirèl details la sou kèk navigatè */
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans">
 
-<div class="container">
+    <header class="gradient-bg text-white py-16 px-6 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4">Kreye Sit Entènèt Debitan</h1>
+            <p class="text-xl opacity-90 mb-6">Yon fòmasyon pratik pou mèt teknoloji a nan men w nan sèlman 3 semèn.</p>
+            
+            <div class="bg-white/10 backdrop-blur-md inline-block p-6 rounded-2xl border border-white/20 mb-8">
+                <p class="text-lg">Enskripsyon: <span class="line-through opacity-70">500 HTG</span> <span class="font-bold text-yellow-300 ml-2 text-2xl">250 HTG</span></p>
+                <p class="text-sm font-medium mt-1 uppercase tracking-wider text-yellow-200">* Sèlman pou 10 premye moun yo</p>
+            </div>
+            <br>
+            <a href="https://wa.me/50940488401?text=Bonjou,%20mwen%20vle%20enskri%20nan%20fòmasyon%20an.%20Men%20prèv%20pèman%20mwen." class="bg-white text-blue-700 px-10 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 hover:text-blue-900 transition-all shadow-xl inline-flex items-center">
+                <i class="fab fa-whatsapp mr-2 text-2xl"></i> Enskri Kounye a
+            </a>
+        </div>
+    </header>
 
-<h1>NS4 Edu App</h1>
-<p>Kreye kont ou</p>
+    <main class="max-w-6xl mx-auto py-12 px-6">
+        
+        <div class="grid md:grid-cols-2 gap-8 mb-16">
+            <section class="bg-white p-8 rounded-xl shadow-sm border-l-4 border-blue-600">
+                <h2 class="text-2xl font-bold mb-4 text-blue-600"><i class="fas fa-play-circle mr-2"></i>Kijan kou a ap fèt?</h2>
+                <ul class="space-y-4">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i> 5 vidyo chak semèn (5 rive 12 minit)</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i> 5 rezime an PDF pou w ka li nenpòt kote</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i> 2 devwa pratik pou teste sa w aprann</li>
+                    <li class="flex items-center"><i class="fas fa-robot text-blue-500 mr-3"></i> Entegrasyon IA pou ede w travay pi vit</li>
+                </ul>
+            </section>
 
-<input type="text" id="name" placeholder="Non">
-<input type="text" id="lastname" placeholder="Siyati">
-<input type="text" id="pseudo" placeholder="Pseudo">
+            <section class="bg-white p-8 rounded-xl shadow-sm border-l-4 border-blue-600">
+                <h2 class="text-2xl font-bold mb-4 text-blue-600"><i class="fas fa-star mr-2"></i>Diferans nou</h2>
+                <p class="text-gray-600 mb-4">
+                    Lòt kou yo ka plis "akademik", yo mande plis tan ak plis kòb. Pa nou an baze sou <strong>pwogresyon rapid</strong>.
+                </p>
+                <p class="italic text-gray-500 border-t pt-4">
+                    "Nou pa di nou pi bon, ni nou pa pi mal, men nou ba w rezilta pratik epi n'ap toujou la pou n gide w nan pwojè w yo."
+                </p>
+            </section>
+        </div>
 
-<select id="serie">
-<option value="">Chwazi Seri</option>
-<option>SMP</option>
-<option>LLA</option>
-<option>SVT</option>
-<option>SES</option>
-</select>
+        <section id="programme" class="mb-16 max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center uppercase tracking-widest">Pwogram 3 Semèn nan</h2>
+            <div class="space-y-4">
+                
+                <details class="bg-white p-5 rounded-lg shadow-sm border border-blue-100 cursor-pointer group">
+                    <summary class="font-bold text-lg list-none flex justify-between items-center text-blue-800">
+                        Semèn 1 : Fondasyon ak Estrikti
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition text-blue-500"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-600 pl-4 border-l-2 border-blue-400">Kòmansman devlopman, estrikti de A rive nan Z ak premye kòd yo.</p>
+                </details>
 
-<input type="email" id="contact" placeholder="Email">
+                <details class="bg-white p-5 rounded-lg shadow-sm border border-blue-100 cursor-pointer group">
+                    <summary class="font-bold text-lg list-none flex justify-between items-center text-blue-800">
+                        Semèn 2 : Design, Stil ak IA
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition text-blue-500"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-600 pl-4 border-l-2 border-blue-400">Mete stil, design ak itilize IA pou rann sit la pwofesyonèl.</p>
+                </details>
 
-<button id="signupBtn">Enskri</button>
+                <details class="bg-white p-5 rounded-lg shadow-sm border border-blue-100 cursor-pointer group">
+                    <summary class="font-bold text-lg list-none flex justify-between items-center text-blue-800">
+                        Semèn 3 : Piblikasyon ak Finalizasyon
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition text-blue-500"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-600 pl-4 border-l-2 border-blue-400">Finalizasyon, koreksyon devwa yo ak piblikasyon ofisyèl sou entènèt.</p>
+                </details>
 
-<p id="status"></p>
+            </div>
+        </section>
 
-<p>Ou deja gen kont ?</p>
-<button onclick="goLogin()">Konekte</button>
+        <section class="bg-gray-900 text-white p-10 rounded-2xl shadow-2xl relative overflow-hidden">
+            <div class="relative z-10">
+                <h2 class="text-3xl font-bold mb-6 text-center text-blue-400">Pouvwa Teknoloji ak IA</h2>
+                <p class="text-gray-300 text-center max-w-3xl mx-auto leading-relaxed">
+                    Kreye yon sit entènèt se youn nan teknoloji ki pi enpòtan jodi a. Grasa Entelijans Atifisyèl (IA) n'ap entegre nan fòmasyon an, w'ap kapab pwodwi rezilta pwofesyonèl menmsi w se yon total debitan. Se pa sèlman kòd, se aprann sèvi ak zouti modèn yo pou reyalize rèv ou.
+                </p>
+            </div>
+            <div class="absolute top-0 right-0 opacity-10 text-9xl p-4">
+                <i class="fas fa-microchip"></i>
+            </div>
+        </section>
 
-</div>
+        <section class="mt-16 text-center bg-yellow-50 p-10 rounded-2xl promo-card">
+            <h3 class="text-2xl font-bold mb-4 uppercase">Pa pèdi tan!</h3>
+            <p class="mb-6">Klike sou bouton an, voye yon prèv pèman oubyen yon <strong>screenshot</strong> sou WhatsApp pou n valide plas ou.</p>
+            <a href="https://wa.me/50940488401?text=Bonjou,%20mwen%20vle%20enskri%20nan%20fòmasyon%20an.%20Men%20prèv%20pèman%20mwen." class="bg-green-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-green-700 transition shadow-md">
+                Voye Prèv Pèman (WhatsApp)
+            </a>
+        </section>
 
-<script>
+    </main>
 
-function goLogin(){
-
-if(!navigator.onLine){
-alert("Pa gen entènèt ❌");
-return;
-}
-
-location="login.html";
-
-}
-
-</script>
-<!-- Nouvèl (v4) -->
-<script type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
-</script>
-<script type="text/javascript">
-   (function(){
-      emailjs.init({
-        publicKey: "YOUR_PUBLIC_KEY",
-      });
-   })();
-</script>
-
-
-<script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-database-compat.js"></script>
-
-<script src="firebase-config.js"></script>
-<script src="signups.js"></script>
+    <footer class="bg-white py-12 border-t">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="mb-6">
+                <span class="text-2xl font-black text-blue-600">Global Plis ∞</span>
+                <p class="text-sm text-gray-500 mt-2">Yon pwojè pa <strong>NS4 Support Plus</strong></p>
+            </div>
+            <div class="flex justify-center space-x-6 text-sm mb-6">
+                <a href="https://globalplisht.onrender.com" class="text-blue-600 font-bold underline italic">Sit Ofisyèl Global Plis</a>
+            </div>
+            <p class="text-xs text-gray-400">© 2026 Global Plis ∞. Tout dwa rezève.</p>
+        </div>
+    </footer>
 
 </body>
 </html>
