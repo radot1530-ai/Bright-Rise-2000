@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fòmilè Kreyasyon Sit Entènèt</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            font-size: 20px;
+        }
+        p.subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .help-text {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .checkbox-group, .radio-group {
+            margin-top: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .checkbox-group label, .radio-group label {
+            display: inline-flex;
+            align-items: center;
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+        .checkbox-group input, .radio-group input {
+            margin-right: 8px;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="form-container">
+    <h1>🌐 FÒMILÈ POU KREYASYON SIT ENTÈNÈT</h1>
+    <p class="subtitle"><strong>Global Plis +∞ — Nou kreye sit entènèt pou moun oswa biznis</strong><br>
+    Fòmilè sa a fèt pou li senp epi adapte ak nenpòt moun. Ou pa bezwen gen gwo konesans nan teknoloji pou w ranpli l!</p>
+
+    <form id="website-form">
+        <!-- 1. ENFÒMASYON JENERAL -->
+        <h2>1. 👤 KILÈS OU YE? (Enfòmasyon pèsonèl oswa biznis)</h2>
+        <div class="form-group">
+            <label for="non_konple">Non ou oswa Non Biznis la:</label>
+            <input type="text" id="non_konple" name="Non_Konple" required>
+        </div>
+        <div class="form-group">
+            <label for="telefon">Nimewo WhatsApp / Telefòn:</label>
+            <input type="tel" id="telefon" name="Telefon" required>
+        </div>
+        <div class="form-group">
+            <label for="imel">Imèl ou (si w genyen):</label>
+            <input type="email" id="imel" name="Imel">
+        </div>
+
+        <!-- 2. OBJEKTIF PWOJÈ A -->
+        <h2>2. 🎯 POUKISA W AP FÈ SIT SA A?</h2>
+        <div class="form-group">
+            <label>Ki kalite sit ou bezwen?</label>
+            <span class="help-text">Chwazi sa ki pi byen koresponn ak pwojè w la.</span>
+            <div class="radio-group" style="flex-direction: column;">
+                <label><input type="radio" name="Kalite_Sit" value="Prezantasyon Biznis/Konpayi"> 🏢 <b>Prezantasyon Biznis:</b> Pou moun konnen kiyès ou ye ak sa w fè (Vitrine).</label>
+                <label><input type="radio" name="Kalite_Sit" value="E-commerce (Vann pwodwi)"> 🛒 <b>E-commerce:</b> Pou w vann pwodwi sou entènèt e resevwa peman.</label>
+                <label><input type="radio" name="Kalite_Sit" value="Pòtfolyo / CV"> 🎨 <b>Pòtfolyo:</b> Pou montre travay ou (atis, fotograf, pwofesyonèl).</label>
+                <label><input type="radio" name="Kalite_Sit" value="Blog / Atik"> ✍️ <b>Blog:</b> Pou ekri ak pataje atik oswa nouvèl.</label>
+                <label><input type="radio" name="Kalite_Sit" value="Bay Sèvis / Pran Randevou"> 📅 <b>Sèvis:</b> Pou moun ka pran randevou oswa rezève sèvis ou.</label>
+                <label><input type="radio" name="Kalite_Sit" value="Lòt (Prèzize pi ba a)"> ➕ <b>Lòt:</b> Yon lòt lide spesifik.</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="deskripsyon_pwoje">Dekri pwojè w la an kèk mo senp:</label>
+            <span class="help-text">Kisa w vle moun wè an premye lè yo antre sou sit la?</span>
+            <textarea id="deskripsyon_pwoje" name="Deskripsyon_Pwoje" rows="3"></textarea>
+        </div>
+
+        <!-- 3. DOMÈN AK ESPAS (ADRÈS SIT LA) -->
+        <h2>3. 🌍 NON AK ADRÈS SIT LA</h2>
+        <div class="form-group">
+            <label>Ki non w ta renmen sit la genyen? (egzanp: www.nonou.com)</label>
+            <input type="text" name="Non_Domen_Oswa_Adres" placeholder="Ekri non ou swete a...">
+        </div>
+        <div class="form-group">
+            <label>Èske w deja gen non sa a achte oswa anrejistre?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="Deja_Gen_Domen" value="Wi, mwen gentan genyen l"> Wi</label>
+                <label><input type="radio" name="Deja_Gen_Domen" value="Non, m ap bezwen èd pou sa"> Non, mwen bezwen èd pou sa</label>
+                <label><input type="radio" name="Deja_Gen_Domen" value="Mwen pa konprann kisa sa ye"> Mwen pa konprann kisa sa ye</label>
+            </div>
+        </div>
+
+        <!-- 4. APARANS AK KISA KI DWE SOU LI -->
+        <h2>4. 🎨 APARANS AK OPSYON YO</h2>
+        <div class="form-group">
+            <label>Ki koulè ou ta renmen wè sou sit ou a?</label>
+            <input type="text" name="Koule_Prefere" placeholder="Egzanp: Ble ak blan, Nwa ak lò...">
+        </div>
+        <div class="form-group">
+            <label>Kisa ou ta renmen moun yo kapab fè sou sit la? (Ou ka chwazi plizyè)</label>
+            <div class="checkbox-group" style="flex-direction: column;">
+                <label><input type="checkbox" name="Opsyon_Sit" value="Gade enfòmasyon ak foto"> Gade enfòmasyon ak foto (Paj akèy, A pwopo)</label>
+                <label><input type="checkbox" name="Opsyon_Sit" value="Voye mesaj dirèk ban mwen"> Kontakte m (Fòm kontak ki voye mesaj nan imèl/WhatsApp mwen)</label>
+                <label><input type="checkbox" name="Opsyon_Sit" value="Gade yon lis pwodwi oswa sèvis"> Gade yon lis pwodwi oswa sèvis mwen ofri</label>
+                <label><input type="checkbox" name="Opsyon_Sit" value="Achte pwodwi epi peye sou sit la"> Achte pwodwi epi peye sou sit la (Panye, Checkout)</label>
+                <label><input type="checkbox" name="Opsyon_Sit" value="Pran Randevou/Rezèvasyon"> Pran Randevou oswa fè rezèvasyon</label>
+                <label><input type="checkbox" name="Opsyon_Sit" value="Fè rechèch sou sit la"> Chèche enfòmasyon (Ba rechèch)</label>
+                <label><input type="checkbox" name="Opsyon_Sit" value="Enskri oswa Kreye Kont"> Enskri kòm manm (Kreye kont kliyan)</label>
+            </div>
+        </div>
+
+        <!-- 5. DELÈ AK BIDJÈ -->
+        <h2>5. ⏱️ LÒT ENFÒMASYON ENPÒTAN</h2>
+        <div class="form-group">
+            <label>Kilè ou ta bezwen sit la pare?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="Dele_Pwoje" value="Pi vit posib (1-2 semèn)"> Pi vit posib (1-2 semèn)</label>
+                <label><input type="radio" name="Dele_Pwoje" value="Mwen gen tan (1 mwa)"> Mwen gen tan (apeprè 1 mwa)</label>
+                <label><input type="radio" name="Dele_Pwoje" value="Pa gen presyon"> Pa gen okenn dat egzak, pran tan w</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Nan ki nivo ou swete envesti nan pwojè sa a? (Bidjè apwoksimatif HTG)</label>
+            <select name="Bidje_Apwoksimatif">
+                <option value="">Chwazi yon opsyon...</option>
+                <option value="Mwens pase 10,000 HTG">Mwens pase 10,000 HTG</option>
+                <option value="10,000 - 20,000 HTG">10,000 - 20,000 HTG</option>
+                <option value="20,000 - 40,000 HTG">20,000 - 40,000 HTG</option>
+                <option value="Plis pase 40,000 HTG">Plis pase 40,000 HTG</option>
+                <option value="Mwen pa konnen ankò">Mwen poko konnen, mwen bezwen konsèy</option>
+            </select>
+        </div>
+
+        <!-- ✅ VALIDASYON -->
+        <h2>✅ VALIDASYON AK AKÒ</h2>
+        <p>Mwen konfime ke enfòmasyon sa yo kòrèk. Nou pral analize yo pou nou ka ba ou yon sit ki egzakteman sa ou bezwen an.</p>
+        <div class="form-group" style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <label for="siyati_non">Siyati ou (Ekri non w):</label>
+                <input type="text" id="siyati_non" name="Siyati" required>
+            </div>
+            <div style="flex: 1;">
+                <label for="validasyon_dat">Dat jodi a:</label>
+                <input type="date" id="validasyon_dat" name="Dat_Validasyon" required>
+            </div>
+        </div>
+
+        <button type="submit">Voye Fòmilè a & Telechaje yon Kopi PDF</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('website-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // 1. Collect Data
+        const formData = new FormData(this);
+        let messageText = "🌐 *NOUVO PWOJÈ SIT ENTÈNÈT (Global Plis +∞)*\n\n";
+        let htmlContent = "<div style='font-family: Arial, sans-serif; padding: 20px;'>";
+        htmlContent += "<h1 style='color: #2c3e50; text-align: center;'>FÒMILÈ KREYASYON SIT ENTÈNÈT</h1>";
+        htmlContent += "<p style='text-align: center; color: #7f8c8d;'>Enfòmasyon Pwojè Kliyan an</p><hr style='border: 1px solid #eee; margin-bottom: 20px;'>";
+        
+        // Track checkboxes manually to group them nicely
+        const checkboxGroups = {};
+
+        for (let [key, value] of formData.entries()) {
+             if(value.trim() !== '') {
+                 // Format key to look nicer (replace underscores with spaces)
+                 let niceKey = key.replace(/_/g, ' ');
+                 
+                 // Handle multiple values for checkboxes
+                 if (this.elements[key].type === 'checkbox' || (this.elements[key].length && this.elements[key][0].type === 'checkbox')) {
+                     if(!checkboxGroups[niceKey]) checkboxGroups[niceKey] = [];
+                     checkboxGroups[niceKey].push(value);
+                 } else {
+                     messageText += `*${niceKey}:* ${value}\n`;
+                     htmlContent += `<p><strong>${niceKey}:</strong> ${value}</p>`;
+                 }
+             }
+        }
+
+        // Add collected checkboxes to message and HTML
+        for (let key in checkboxGroups) {
+            messageText += `*${key}:* ${checkboxGroups[key].join(', ')}\n`;
+            htmlContent += `<p><strong>${key}:</strong> ${checkboxGroups[key].join(', ')}</p>`;
+        }
+
+        htmlContent += "</div>";
+
+        // 2. Generate PDF
+        const pdfContainer = document.createElement('div');
+        pdfContainer.innerHTML = htmlContent;
+
+        const opt = {
+            margin:       0.5,
+            filename:     'Fomile_Sit_Entenet_Pwoje.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(pdfContainer).save().then(() => {
+            // 3. Send WhatsApp Message
+            const whatsappNumber = "50940488401";
+            const encodedMessage = encodeURIComponent(messageText);
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+            
+            // Open WhatsApp in a new tab
+            window.open(whatsappUrl, '_blank');
+        });
+    });
+</script>
+
+</body>
+</html>
