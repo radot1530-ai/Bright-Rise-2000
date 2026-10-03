@@ -10,8 +10,8 @@
 // par exemple en les remplaçant par un appel à une API de taux de change.
 export const CURRENCIES = {
   HTG: { label: "HTG", name: "Gourde haïtienne", rate: 1, decimals: 0 },
-  USD: { label: "USD", name: "Dollar américain", rate: 1 / 130.7, decimals: 2 },
-  EUR: { label: "EUR", name: "Euro", rate: 1 / 149.0, decimals: 2 },
+  USD: { label: "USD", name: "Dollar américain", rate: 1 / 140, decimals: 2 },
+  EUR: { label: "EUR", name: "Euro", rate: 1 / 163.0, decimals: 2 },
   FCFA: { label: "FCFA", name: "Franc CFA", rate: 4.403, decimals: 0 },
 };
 
