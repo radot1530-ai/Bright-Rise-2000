@@ -44,7 +44,7 @@ form.addEventListener("submit", async (e) => {
     if (password.length < 6) return say("Mot de passe trop court : 6 caractères minimum.");
     if (password !== form.confirm.value) return say("Les mots de passe ne correspondent pas.");
   }
-  if (firebaseConfig.apiKey === "AIzaSyDxN2jYclFAeSh9tMvkoeZCTsFvWNQYOzA") return say("Ajoutez votre configuration Firebase dans auth.js.");
+  if (firebaseConfig.apiKey === "VOTRE_API_KEY") return say("Ajoutez votre configuration Firebase dans auth.js.");
   const btn = form.querySelector("button[type=submit]");
   btn.disabled = true;
   try {
