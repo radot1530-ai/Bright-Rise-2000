@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connexion – Global Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="a-propos.html">Global Store</a>
+  <nav><a href="a-propos.html">À propos</a></nav>
+</div></header>
+<main class="auth">
+  <div class="auth-side">
+    <h2>Bon retour.</h2>
+    <p>Connectez-vous pour acheter vos cartes cadeaux et recharges.</p>
+  </div>
+  <div class="auth-form">
+    <form id="form" data-mode="login" novalidate>
+      <h1>Connexion</h1>
+      <p>Accédez à vos commandes et recharges.</p>
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="email" required>
+      <label for="password">Mot de passe</label>
+      <div class="pw"><input id="password" type="password" autocomplete="current-password" minlength="6" required><button type="button" id="toggle">Afficher</button></div>
+      <button class="btn" type="submit">Se connecter</button>
+      <div class="msg" id="msg" role="alert" aria-live="polite"></div>
+      <p class="alt">Pas encore de compte ? <a href="inscription.html">Créer un compte</a></p>
+    </form>
+  </div>
+</main>
+<script type="module" src="auth.js"></script>
+</body>
+</html>
