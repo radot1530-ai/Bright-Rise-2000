@@ -8,7 +8,7 @@ const firebaseConfig = {
     appId: "1:1072291248908:web:711d01129b833847c5a729",
     measurementId: "G-DEYNQ8GQ9B"
 };
-const REDIRECT_AFTER_AUTH = "a-propos.html"; // page après connexion
+const REDIRECT_AFTER_AUTH = "index.html"; // page après connexion
 
 const form = document.getElementById("form");
 const msg = document.getElementById("msg");
@@ -44,7 +44,7 @@ form.addEventListener("submit", async (e) => {
     if (password.length < 6) return say("Mot de passe trop court : 6 caractères minimum.");
     if (password !== form.confirm.value) return say("Les mots de passe ne correspondent pas.");
   }
-  if (firebaseConfig.apiKey === "VOTRE_API_KEY") return say("Ajoutez votre configuration Firebase dans auth.js.");
+  if (firebaseConfig.apiKey === "AIzaSyDxN2jYclFAeSh9tMvkoeZCTsFvWNQYOzA") return say("Ajoutez votre configuration Firebase dans auth.js.");
   const btn = form.querySelector("button[type=submit]");
   btn.disabled = true;
   try {
