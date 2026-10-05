@@ -4,10 +4,6 @@
 // ======================================================================
 
 // --- Devises -----------------------------------------------------------
-// Les prix sont stockés en HTG (gourde haïtienne), la devise de base.
-// "rate" = combien vaut 1 HTG dans cette devise. Taux approximatifs
-// (USD≈130,7 HTG, EUR≈149 HTG, FCFA≈4,40 HTG) — à ajuster régulièrement,
-// par exemple en les remplaçant par un appel à une API de taux de change.
 export const CURRENCIES = {
   HTG: { label: "HTG", name: "Gourde haïtienne", rate: 1, decimals: 0 },
   USD: { label: "USD", name: "Dollar américain", rate: 1 / 130.7, decimals: 2 },
@@ -29,8 +25,6 @@ export function formatPrice(amountHTG, code = getCurrency()) {
   return `${formatted} ${c.label}`;
 }
 
-// Branche un <select> de devise : affiche la devise active et relance
-// renderFn (reçoit le code devise) à chaque changement.
 export function wireCurrencySelect(selectEl, renderFn) {
   if (!selectEl) return;
   selectEl.innerHTML = Object.entries(CURRENCIES)
@@ -44,7 +38,7 @@ export function wireCurrencySelect(selectEl, renderFn) {
   });
 }
 
-// --- Icônes (SVG maison, pas de logo de marque — voir note plus bas) ---
+// --- Icônes ------------------------------------------------------------
 export const ICONS = {
   giftcard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="8" width="18" height="12" rx="1"/><path d="M3 12h18"/><path d="M12 8v12"/><path d="M12 8c-1.5-3-5.5-3-5.5 0S10.5 11 12 8z"/><path d="M12 8c1.5-3 5.5-3 5.5 0S13.5 11 12 8z"/></svg>`,
   game: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 10v4M5 12h4"/><circle cx="16" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="18.5" cy="14" r="1" fill="currentColor" stroke="none"/></svg>`,
@@ -52,9 +46,6 @@ export const ICONS = {
 };
 
 // --- Chan ki nesesè selon tip pwodui a ------------------------------------
-// "giftcard" : sèvis tankou Netflix/Prime — nou bezwen imèl kont lan pou
-// nou ka aplike/rechaje abònman an.
-// "topup" : rechaj nan yon jwèt — nou bezwen ID/UID kont jwè a.
 export const FIELD_SETS = {
   giftcard: [
     { id: "email", label: "E-mail kont lan (pou nou rechaje sèvis la)", type: "email", required: true },
@@ -64,24 +55,17 @@ export const FIELD_SETS = {
     { id: "playerId", label: "ID / UID kont jwèt la", type: "text", required: true },
     { id: "playerName", label: "Non itilizatè nan jwèt la (opsyonèl)", type: "text", required: false },
   ],
+  meruAuth: [
+    { id: "identifier", label: "E-mail oswa non itilizatè", type: "text", required: true },
+    { id: "note", label: "Nòt oswa enstriksyon (opsyonèl)", type: "text", required: false },
+  ]
 };
 
 // --- Katalòg ---------------------------------------------------------------
-// Chak pwodui gen plizyè "variants" (pa gen yon sèl pri fiks) :
-// { id, label, priceHTG }. Pri yo isit la se egzanp — ajiste yo selon
-// founisè w. Pou kat kado (Netflix, Prime), pi piti pri a dwe omwen
-// ekivalan 15 $ US (règ magazen an) ; pou rechaj jwèt yo, pi piti pake a
-// chwazi espre pou li pa twò piti.
-//
-// NOTE SOU IMAJ YO : "img" vid pa default — yon icon fèt pa nou menm
-// (san logo mak depoze) parèt nan plas li, pou nou pa itilize logo ofisyèl
-// Netflix/PUBG/elatriye san otorizasyon. Pou mete vrè logo a, ebèje imaj la
-// (sou Firebase Storage pa egzanp, oswa yon lòt CDN ou gen dwa itilize) epi
-// kole lyen https:// li nan "img", pa egzanp :
-//   img: "https://firebasestorage.googleapis.com/.../netflix.png"
 export const PRODUCTS = [
   {
-    id: "netflix", name: "Netflix", cat: "Abònman", icon: "giftcard", img: "",
+    id: "netflix", name: "Netflix", cat: "Abònman", icon: "giftcard", 
+    img: "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=200&auto=format&fit=crop&q=60",
     fields: FIELD_SETS.giftcard,
     variants: [
       { id: "1m", label: "1 mwa", priceHTG: 500 },
@@ -92,9 +76,9 @@ export const PRODUCTS = [
     ],
   },
   {
-    id: "prime-video", name: "Prime Video", cat: "Kat kado", icon: "giftcard", img: "",
+    id: "prime-video", name: "Prime Video", cat: "Kat kado", icon: "giftcard", 
+    img: "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=200&auto=format&fit=crop&q=60",
     fields: FIELD_SETS.giftcard,
-    // Minimòm 15 $ US pou kat kado yo — konvèti an HTG ak CURRENCIES.USD.rate.
     variants: [
       { id: "15usd", label: "15 $", priceHTG: Math.round(15 / CURRENCIES.USD.rate) },
       { id: "20usd", label: "20 $", priceHTG: Math.round(20 / CURRENCIES.USD.rate) },
@@ -104,7 +88,8 @@ export const PRODUCTS = [
     ],
   },
   {
-    id: "free-fire", name: "Free Fire", cat: "Diamants", icon: "game", img: "",
+    id: "free-fire", name: "Free Fire", cat: "Diamants", icon: "game", 
+    img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=200&auto=format&fit=crop&q=60",
     fields: FIELD_SETS.topup,
     variants: [
       { id: "100", label: "100 💎", priceHTG: 150 },
@@ -114,7 +99,8 @@ export const PRODUCTS = [
     ],
   },
   {
-    id: "pubg", name: "PUBG", cat: "UC", icon: "game", img: "",
+    id: "pubg", name: "PUBG", cat: "UC", icon: "game", 
+    img: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=200&auto=format&fit=crop&q=60",
     fields: FIELD_SETS.topup,
     variants: [
       { id: "60", label: "60 UC", priceHTG: 150 },
@@ -124,7 +110,8 @@ export const PRODUCTS = [
     ],
   },
   {
-    id: "efootball", name: "eFootball", cat: "Coins", icon: "game", img: "",
+    id: "efootball", name: "eFootball", cat: "Coins", icon: "game", 
+    img: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=200&auto=format&fit=crop&q=60",
     fields: FIELD_SETS.topup,
     variants: [
       { id: "125", label: "125 coins", priceHTG: 150 },
@@ -134,7 +121,8 @@ export const PRODUCTS = [
     ],
   },
   {
-    id: "dls", name: "DLS", cat: "Diamants", icon: "game", img: "",
+    id: "dls", name: "DLS", cat: "Diamants", icon: "game", 
+    img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=200&auto=format&fit=crop&q=60",
     fields: FIELD_SETS.topup,
     variants: [
       { id: "140", label: "140 💎", priceHTG: 150 },
@@ -143,12 +131,15 @@ export const PRODUCTS = [
     ],
   },
   {
-    id: "meru", name: "Méru", cat: "Recharge", icon: "game", img: "",
-    fields: FIELD_SETS.topup,
+    id: "meru", name: "Méru", cat: "Recharge", icon: "game", 
+    img: "https://images.unsplash.com/photo-1493711662062-fa541abbe517?w=200&auto=format&fit=crop&q=60",
+    fields: FIELD_SETS.meruAuth,
     variants: [
-      { id: "petit", label: "Pake Piti", priceHTG: 150 },
-      { id: "moyen", label: "Pake Mwayen", priceHTG: 300 },
-      { id: "gwo", label: "Pake Gwo", priceHTG: 600 },
+      { id: "5usd", label: "5 $", priceHTG: Math.round(5 / CURRENCIES.USD.rate) },
+      { id: "10usd", label: "10 $", priceHTG: Math.round(10 / CURRENCIES.USD.rate) },
+      { id: "25usd", label: "25 $", priceHTG: Math.round(25 / CURRENCIES.USD.rate) },
+      { id: "50usd", label: "50 $", priceHTG: Math.round(50 / CURRENCIES.USD.rate) },
+      { id: "100usd", label: "100 $", priceHTG: Math.round(100 / CURRENCIES.USD.rate) },
     ],
   },
 ];
@@ -157,29 +148,26 @@ export const getProduct = (id) => PRODUCTS.find((p) => p.id === id);
 export const cheapestVariant = (p) => p.variants.reduce((a, b) => (a.priceHTG < b.priceHTG ? a : b));
 
 // --- Moyens de recharge du solde -----------------------------------------
-// Même règle pour "img" que pour les produits : vide par défaut, une icône
-// maison est utilisée ; colle l'URL du vrai logo si tu as le droit de l'utiliser.
 export const PAYMENT_METHODS = [
   {
     id: "moncash",
     name: "MonCash",
     sub: "Digicel",
-    img: "",
-    number: "+509 00 00 0000", // ranplase ak vrè nimewo MonCash biznis ou
+    img: "https://images.unsplash.com/photo-1616781250275-c06df2616f73?w=200&auto=format&fit=crop&q=60",
+    number: "+509 00 00 0000",
     instructions: "Voye montan an sou nimewo MonCash Global Store anwo a, epi ranpli fòmilè a avèk enfòmasyon tranzaksyon an.",
   },
   {
     id: "natcash",
     name: "NatCash",
     sub: "Natcom",
-    img: "",
-    number: "+509 00 00 0000", // ranplase ak vrè nimewo NatCash biznis ou
+    img: "https://images.unsplash.com/photo-1580048915913-4f8f5cb481c4?w=200&auto=format&fit=crop&q=60",
+    number: "+509 00 00 0000", 
     instructions: "Voye montan an sou nimewo NatCash Global Store anwo a, epi ranpli fòmilè a avèk enfòmasyon tranzaksyon an.",
   },
 ];
 
 // --- Rendu du catalogue en grille -----------------------------------------
-// container: élément DOM. hrefFor(product): string — lien de la carte.
 export function renderProducts(container, currencyCode, hrefFor) {
   container.innerHTML = PRODUCTS.map((p) => `
     <a class="product-card" href="${hrefFor(p)}">
@@ -191,7 +179,6 @@ export function renderProducts(container, currencyCode, hrefFor) {
 }
 
 // --- Rendu des moyens de recharge -----------------------------------------
-// container: élément DOM. onSelect(method): appelé au clic sur une carte.
 export function renderPaymentMethods(container, onSelect) {
   container.innerHTML = PAYMENT_METHODS.map((m) => `
     <button class="pay-card" data-id="${m.id}" type="button">
