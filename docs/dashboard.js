@@ -1,4 +1,5 @@
 import { formatPrice, wireCurrencySelect, renderProducts, renderPaymentMethods } from "./catalog.js";
+import { t, formatDate, onLangChange } from "./i18n.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxN2jYclFAeSh9tMvkoeZCTsFvWNQYOzA",
@@ -10,91 +11,140 @@ const firebaseConfig = {
   measurementId: "G-DEYNQ8GQ9B"
 };
 
-const dateFr = (d) => d ? new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" }) : "—";
+const $ = (id) => document.getElementById(id);
 const initials = (name, email) => (name ? name.trim()[0] : (email ? email[0] : "?")).toUpperCase();
 
+// --- Eta paj la ----------------------------------------------------------
 let currentCurrency = "HTG";
+let currentUser = null;
+let balanceHTG = 0;
+let orders = [];
+let selectedMethod = null;
 
-function renderOrders(orders) {
-  const body = document.getElementById("ordersBody");
-  const empty = document.getElementById("ordersEmpty");
+// --- Rendu ---------------------------------------------------------------
+const isDelivered = (o) => o.status === "livré" || o.status === "ok";
+
+function renderOrders() {
+  const body = $("ordersBody");
+  const empty = $("ordersEmpty");
   body.innerHTML = "";
-  if (!orders.length) { empty.hidden = false; return; }
-  empty.hidden = true;
+  $("ordersTable").hidden = !orders.length;
+  empty.hidden = !!orders.length;
   for (const o of orders) {
     const tr = document.createElement("tr");
-    const statusClass = o.status === "livré" || o.status === "ok" ? "ok" : "pending";
-    tr.innerHTML = `
-      <td>${o.product ?? "—"}</td>
-      <td>${dateFr(o.createdAt)}</td>
-      <td>${formatPrice(o.amount ?? 0, currentCurrency)}</td>
-      <td><span class="status ${statusClass}">${o.status ?? "en attente"}</span></td>`;
+    const cells = [
+      [t("col.product"), o.product ?? "—"],
+      [t("col.date"), formatDate(o.createdAt)],
+      [t("col.amount"), formatPrice(o.amount ?? 0, currentCurrency)],
+    ];
+    for (const [label, value] of cells) {
+      const td = document.createElement("td");
+      td.dataset.label = label;
+      td.textContent = value;
+      tr.appendChild(td);
+    }
+    const td = document.createElement("td");
+    td.dataset.label = t("col.status");
+    const pill = document.createElement("span");
+    pill.className = `status ${isDelivered(o) ? "ok" : "pending"}`;
+    pill.textContent = isDelivered(o) ? t("status.delivered") : t("status.pending");
+    td.appendChild(pill);
+    tr.appendChild(td);
     body.appendChild(tr);
   }
 }
 
-function wireProducts(code) {
+function renderUser() {
+  const user = currentUser;
+  const name = user?.displayName || t("dash.client");
+  $("hello").textContent = user ? t("dash.hello", { name: name.split(" ")[0] }) : "";
+  const nameEl = $("userName");
+  nameEl.removeAttribute("data-i18n");
+  nameEl.textContent = user ? name : t("common.loading");
+  $("userEmail").textContent = user?.email || "";
+  $("avatar").textContent = user ? initials(user.displayName, user.email) : "?";
+}
+
+const renderBalance = () => { $("statBalance").textContent = formatPrice(balanceHTG, currentCurrency); };
+
+function renderProductGrid() {
+  renderProducts($("productGrid"), currentCurrency, (p) => `checkout.html?product=${p.id}`);
+}
+
+function renderPayText() {
+  $("payInstructions").textContent = selectedMethod
+    ? t("pay.instr", { name: selectedMethod.name })
+    : t("dash.pickMethod");
+  $("payNumber").textContent = selectedMethod?.number ? t("dash.number", { n: selectedMethod.number }) : "";
+}
+
+function renderAll() {
+  renderUser();
+  renderBalance();
+  renderProductGrid();
+  renderOrders();
+  renderPayText();
+}
+
+function onCurrency(code) {
   currentCurrency = code;
-  renderProducts(document.getElementById("productGrid"), code, (p) => `checkout.html?product=${p.id}`);
-  document.getElementById("statBalance").dataset.htg && refreshBalanceDisplay();
+  renderBalance();
+  renderProductGrid();
+  renderOrders();
 }
 
-function refreshBalanceDisplay() {
-  const el = document.getElementById("statBalance");
-  const htg = Number(el.dataset.htg || 0);
-  el.textContent = formatPrice(htg, currentCurrency);
-}
-
+// --- Rechaj solde --------------------------------------------------------
 function wireDeposit() {
-  const name = document.getElementById("depositName");
-  const phone = document.getElementById("depositPhone");
-  const amount = document.getElementById("depositAmount");
-  const ref = document.getElementById("depositRef");
-  const btn = document.getElementById("depositBtn");
+  const name = $("depositName");
+  const phone = $("depositPhone");
+  const amount = $("depositAmount");
+  const ref = $("depositRef");
+  const btn = $("depositBtn");
   const inputs = [name, phone, amount, ref, btn];
-  let selected = null;
+  const msg = $("depositMsg");
+  const say = (text, ok = false) => { msg.textContent = text; msg.className = `msg ${ok ? "ok" : "err"}`; };
 
-  renderPaymentMethods(document.getElementById("payGrid"), (method) => {
-    selected = method;
-    document.getElementById("payInstructions").textContent = method.instructions;
-    document.getElementById("payNumber").textContent = method.number ? `Nimewo : ${method.number}` : "";
+  renderPaymentMethods($("payGrid"), (method) => {
+    selectedMethod = method;
+    renderPayText();
     inputs.forEach((el) => (el.disabled = false));
   });
 
-  document.getElementById("depositForm").addEventListener("submit", async (e) => {
+  $("depositForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const msg = document.getElementById("depositMsg");
-    if (!selected) return;
-    if (!name.value.trim()) { msg.style.color = "#ff8a8a"; msg.textContent = "Mete non moun ki voye lajan an."; return; }
-    if (!phone.value.trim()) { msg.style.color = "#ff8a8a"; msg.textContent = "Mete nimewo telefòn ki voye lajan an."; return; }
-    if (!amount.value || Number(amount.value) <= 0) { msg.style.color = "#ff8a8a"; msg.textContent = "Mete yon montan valid."; return; }
-    if (!ref.value.trim()) { msg.style.color = "#ff8a8a"; msg.textContent = "Mete referans/ID tranzaksyon an."; return; }
+    if (!selectedMethod) return;
+    if (!name.value.trim()) return say(t("dep.errName"));
+    if (!phone.value.trim()) return say(t("dep.errPhone"));
+    if (!amount.value || Number(amount.value) <= 0) return say(t("dep.errAmount"));
+    if (!ref.value.trim()) return say(t("dep.errRef"));
     btn.disabled = true;
     try {
       await window.__gsSaveDeposit?.({
-        method: selected.id,
+        method: selectedMethod.id,
         senderName: name.value.trim(),
         senderPhone: phone.value.trim(),
         amount: Number(amount.value),
         reference: ref.value.trim(),
       });
-      msg.style.color = "#fff";
-      msg.textContent = "Demann lan voye. Solde w ap kredite apre verifikasyon.";
-      document.getElementById("depositForm").reset();
+      say(t("dep.ok"), true);
+      $("depositForm").reset();
       inputs.forEach((el) => (el.disabled = true));
-      document.getElementById("payNumber").textContent = "";
+      selectedMethod = null;
+      $("payGrid").querySelectorAll(".pay-card").forEach((b) => b.classList.remove("active"));
+      renderPayText();
     } catch {
-      msg.style.color = "#ff8a8a";
-      msg.textContent = "Nou pa t kapab voye demann lan. Eseye ankò.";
-    } finally {
+      say(t("dep.fail"));
       btn.disabled = false;
     }
   });
 }
 
+// --- Main ----------------------------------------------------------------
 async function main() {
-  wireCurrencySelect(document.getElementById("currencySelect"), wireProducts);
+  wireCurrencySelect($("currencySelect"), onCurrency);
   wireDeposit();
+  renderAll();
+  onLangChange(() => { $("depositMsg").textContent = ""; renderAll(); });
 
   const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
   const A = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
@@ -104,7 +154,7 @@ async function main() {
   const auth = A.getAuth(app);
   const db = F.getFirestore(app);
 
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
+  $("logoutBtn").addEventListener("click", async () => {
     await A.signOut(auth);
     location.href = "connexion.html";
   });
@@ -114,12 +164,8 @@ async function main() {
       location.href = "connexion.html";
       return;
     }
-
-    const name = user.displayName || "Client";
-    document.getElementById("hello").textContent = `Bonjour, ${name.split(" ")[0]}`;
-    document.getElementById("userName").textContent = name;
-    document.getElementById("userEmail").textContent = user.email || "";
-    document.getElementById("avatar").textContent = initials(user.displayName, user.email);
+    currentUser = user;
+    renderUser();
 
     window.__gsSaveDeposit = (deposit) => F.addDoc(F.collection(db, "deposits"), {
       ...deposit,
@@ -130,13 +176,11 @@ async function main() {
 
     try {
       const userSnap = await F.getDoc(F.doc(db, "users", user.uid));
-      const balance = userSnap.exists() ? userSnap.data().balance : 0;
-      document.getElementById("statBalance").dataset.htg = balance || 0;
-      refreshBalanceDisplay();
+      balanceHTG = userSnap.exists() ? Number(userSnap.data().balance) || 0 : 0;
     } catch {
-      document.getElementById("statBalance").dataset.htg = 0;
-      refreshBalanceDisplay();
+      balanceHTG = 0;
     }
+    renderBalance();
 
     try {
       const q = F.query(
@@ -146,13 +190,13 @@ async function main() {
         F.limit(10)
       );
       const snap = await F.getDocs(q);
-      const orders = snap.docs.map((d) => d.data());
-      renderOrders(orders);
-      document.getElementById("statOrders").textContent = orders.length;
-      document.getElementById("statPending").textContent = orders.filter((o) => o.status !== "livré" && o.status !== "ok").length;
+      orders = snap.docs.map((d) => d.data());
+      $("statOrders").textContent = orders.length;
+      $("statPending").textContent = orders.filter((o) => !isDelivered(o)).length;
     } catch {
-      renderOrders([]);
+      orders = [];
     }
+    renderOrders();
   });
 }
 
