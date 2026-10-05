@@ -1,14 +1,13 @@
 import { formatPrice, wireCurrencySelect, renderProducts, renderPaymentMethods } from "./catalog.js";
 
-// Même configuration Firebase que dans auth.js — copiez-la ici aussi.
 const firebaseConfig = {
-    apiKey: "AIzaSyDxN2jYclFAeSh9tMvkoeZCTsFvWNQYOzA",
-    authDomain: "ns4supportplus.firebaseapp.com",
-    projectId: "ns4supportplus",
-    storageBucket: "ns4supportplus.firebasestorage.app",
-    messagingSenderId: "1072291248908",
-    appId: "1:1072291248908:web:711d01129b833847c5a729",
-    measurementId: "G-DEYNQ8GQ9B"
+  apiKey: "AIzaSyDxN2jYclFAeSh9tMvkoeZCTsFvWNQYOzA",
+  authDomain: "ns4supportplus.firebaseapp.com",
+  projectId: "ns4supportplus",
+  storageBucket: "ns4supportplus.firebasestorage.app",
+  messagingSenderId: "1072291248908",
+  appId: "1:1072291248908:web:711d01129b833847c5a729",
+  measurementId: "G-DEYNQ8GQ9B"
 };
 
 const dateFr = (d) => d ? new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" }) : "—";
@@ -36,10 +35,7 @@ function renderOrders(orders) {
 
 function wireProducts(code) {
   currentCurrency = code;
-  renderProducts(document.getElementById("productGrid"), code, (product) => {
-    // Relie cet achat à ta page de paiement / commande une fois créée.
-    alert(`Achat "${product.name}" (${formatPrice(product.priceHTG, code)}) — connecte ce bouton à ta page de commande.`);
-  });
+  renderProducts(document.getElementById("productGrid"), code, (p) => `checkout.html?product=${p.id}`);
   document.getElementById("statBalance").dataset.htg && refreshBalanceDisplay();
 }
 
@@ -50,36 +46,46 @@ function refreshBalanceDisplay() {
 }
 
 function wireDeposit() {
+  const name = document.getElementById("depositName");
+  const phone = document.getElementById("depositPhone");
   const amount = document.getElementById("depositAmount");
   const ref = document.getElementById("depositRef");
   const btn = document.getElementById("depositBtn");
+  const inputs = [name, phone, amount, ref, btn];
   let selected = null;
 
   renderPaymentMethods(document.getElementById("payGrid"), (method) => {
     selected = method;
     document.getElementById("payInstructions").textContent = method.instructions;
-    [amount, ref, btn].forEach((el) => (el.disabled = false));
+    document.getElementById("payNumber").textContent = method.number ? `Nimewo : ${method.number}` : "";
+    inputs.forEach((el) => (el.disabled = false));
   });
 
   document.getElementById("depositForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const msg = document.getElementById("depositMsg");
     if (!selected) return;
-    if (!amount.value || Number(amount.value) <= 0) { msg.textContent = "Entre un montant valide."; return; }
-    if (!ref.value.trim()) { msg.textContent = "Entre la référence reçue par SMS."; return; }
+    if (!name.value.trim()) { msg.style.color = "#ff8a8a"; msg.textContent = "Mete non moun ki voye lajan an."; return; }
+    if (!phone.value.trim()) { msg.style.color = "#ff8a8a"; msg.textContent = "Mete nimewo telefòn ki voye lajan an."; return; }
+    if (!amount.value || Number(amount.value) <= 0) { msg.style.color = "#ff8a8a"; msg.textContent = "Mete yon montan valid."; return; }
+    if (!ref.value.trim()) { msg.style.color = "#ff8a8a"; msg.textContent = "Mete referans/ID tranzaksyon an."; return; }
     btn.disabled = true;
     try {
       await window.__gsSaveDeposit?.({
         method: selected.id,
+        senderName: name.value.trim(),
+        senderPhone: phone.value.trim(),
         amount: Number(amount.value),
         reference: ref.value.trim(),
       });
       msg.style.color = "#fff";
-      msg.textContent = "Demande envoyée. Ton solde sera crédité après vérification.";
+      msg.textContent = "Demann lan voye. Solde w ap kredite apre verifikasyon.";
       document.getElementById("depositForm").reset();
+      inputs.forEach((el) => (el.disabled = true));
+      document.getElementById("payNumber").textContent = "";
     } catch {
       msg.style.color = "#ff8a8a";
-      msg.textContent = "Impossible d'envoyer la demande pour le moment. Réessaie.";
+      msg.textContent = "Nou pa t kapab voye demann lan. Eseye ankò.";
     } finally {
       btn.disabled = false;
     }
@@ -89,12 +95,6 @@ function wireDeposit() {
 async function main() {
   wireCurrencySelect(document.getElementById("currencySelect"), wireProducts);
   wireDeposit();
-
-  if (firebaseConfig.apiKey === "VOTRE_API_KEY") {
-    document.getElementById("hello").textContent = "Ajoute ta configuration Firebase dans dashboard.js";
-    document.getElementById("userName").textContent = "—";
-    return;
-  }
 
   const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
   const A = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
