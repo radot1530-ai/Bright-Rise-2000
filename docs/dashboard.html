@@ -2,99 +2,104 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tableau de bord – Global Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0f1f">
+  <title data-i18n="title.dashboard">Tableau de bord – Global Store</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script type="module" src="i18n.js"></script>
 </head>
 <body>
 
   <header class="dash-header">
-  <div class="wrap">
-    <a class="logo" href="dashboard.html">Global Store</a>
-    
-    <div class="topbar-extra">
-      <select class="currency-select" id="currencySelect" aria-label="Devise"></select>
-      
-      <div class="user-box">
-        <div class="avatar" id="avatar">?</div>
-        <div class="user-name">
-          <span id="userName">Chargement…</span>
-          <small id="userEmail"></small>
-        </div>
-      </div>
-      
-      <button class="logout" id="logoutBtn">Déconnexion</button>
-    </div>
-  </div>
-</header>
+    <div class="wrap">
+      <a class="logo" href="dashboard.html">Global Store</a>
 
+      <div class="topbar-extra">
+        <select class="currency-select" id="currencySelect" data-i18n-aria="cur.label" aria-label="Devise"></select>
+        <select class="lang-select" id="langSelect" data-i18n-aria="lang.label" aria-label="Langue"></select>
+
+        <div class="user-box">
+          <div class="avatar" id="avatar">?</div>
+          <div class="user-name">
+            <span id="userName" data-i18n="common.loading">Chargement…</span>
+            <small id="userEmail"></small>
+          </div>
+        </div>
+
+        <button class="logout" id="logoutBtn" type="button" data-i18n-aria="nav.logout" aria-label="Déconnexion">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          <span class="logout-text" data-i18n="nav.logout">Déconnexion</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
   <main class="dash-wrap">
-    <h1 class="dash-hello" id="hello">Bonjour</h1>
+    <h1 class="dash-hello" id="hello">&nbsp;</h1>
 
     <div class="stat-row">
-      <div class="stat">
-        <div class="n" id="statBalance">0 FCFA</div>
-        <div class="l">Solde disponible</div>
+      <div class="stat stat-balance">
+        <div class="n" id="statBalance">—</div>
+        <div class="l" data-i18n="dash.balance">Solde disponible</div>
       </div>
       <div class="stat">
         <div class="n" id="statOrders">0</div>
-        <div class="l">Commandes totales</div>
+        <div class="l" data-i18n="dash.orders">Commandes totales</div>
       </div>
       <div class="stat">
         <div class="n" id="statPending">0</div>
-        <div class="l">En attente</div>
+        <div class="l" data-i18n="dash.pending">En attente</div>
       </div>
     </div>
 
     <div class="dash-section">
-      <h2>Acheter</h2>
+      <h2 data-i18n="dash.buy">Acheter</h2>
       <div class="product-grid" id="productGrid"></div>
     </div>
 
     <div class="dash-section">
-      <h2>Recharger mon solde</h2>
+      <h2 data-i18n="dash.topup">Recharger mon solde</h2>
       <div class="pay-grid" id="payGrid"></div>
       <div class="deposit-box">
-        <p class="instructions" id="payInstructions">Choisis un moyen de recharge ci-dessus.</p>
+        <p class="instructions" id="payInstructions"></p>
         <p class="pay-number" id="payNumber"></p>
-        <form id="depositForm">
-          <label for="depositName">Non konplè moun ki voye lajan an</label>
-          <input id="depositName" type="text" required disabled>
-          
-          <label for="depositPhone">Nimewo telefòn ou te voye lajan an avè l</label>
-          <input id="depositPhone" type="tel" required disabled>
-          
-          <label for="depositAmount">Montan ou voye (HTG)</label>
-          <input id="depositAmount" type="number" min="1" step="1" required disabled>
-          
-          <label for="depositRef">Referans/ID tranzaksyon ou resevwa nan SMS</label>
-          <input id="depositRef" type="text" required disabled>
-          
-          <button class="btn" type="submit" id="depositBtn" disabled>Konfime rechaj la</button>
+        <form id="depositForm" novalidate>
+          <label for="depositName" data-i18n="dep.name">Nom complet de la personne qui a envoyé l'argent</label>
+          <input id="depositName" type="text" autocomplete="name" required disabled>
+
+          <label for="depositPhone" data-i18n="dep.phone">Numéro de téléphone utilisé pour l'envoi</label>
+          <input id="depositPhone" type="tel" autocomplete="tel" required disabled>
+
+          <label for="depositAmount" data-i18n="dep.amount">Montant envoyé (HTG)</label>
+          <input id="depositAmount" type="number" inputmode="numeric" min="1" step="1" required disabled>
+
+          <label for="depositRef" data-i18n="dep.ref">Référence / ID de transaction reçu par SMS</label>
+          <input id="depositRef" type="text" autocomplete="off" required disabled>
+
+          <button class="btn" type="submit" id="depositBtn" disabled data-i18n="dep.submit">Confirmer la recharge</button>
         </form>
         <div class="msg" id="depositMsg" role="alert" aria-live="polite"></div>
       </div>
     </div>
 
     <div class="dash-section">
-      <h2>Commandes récentes</h2>
+      <h2 data-i18n="dash.recent">Commandes récentes</h2>
       <div id="ordersWrap">
-        <table>
+        <table id="ordersTable" hidden>
           <thead>
             <tr>
-              <th>Produit</th>
-              <th>Date</th>
-              <th>Montant</th>
-              <th>Statut</th>
+              <th data-i18n="col.product">Produit</th>
+              <th data-i18n="col.date">Date</th>
+              <th data-i18n="col.amount">Montant</th>
+              <th data-i18n="col.status">Statut</th>
             </tr>
           </thead>
           <tbody id="ordersBody"></tbody>
         </table>
-        <p class="empty" id="ordersEmpty" hidden>Aucune commande pour le moment. Choisissez un produit ci-dessus pour commencer.</p>
+        <p class="empty" id="ordersEmpty" data-i18n="dash.empty">Aucune commande pour le moment. Choisissez un produit ci-dessus pour commencer.</p>
       </div>
     </div>
   </main>
