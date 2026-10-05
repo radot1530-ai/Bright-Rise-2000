@@ -1,69 +1,93 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>À propos – Global Store</title>
-<meta name="description" content="Global Store : cartes cadeaux Netflix, Prime Video et recharges Free Fire, PUBG, eFootball, DLS.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<script type="module" src="catalogue-public.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>À propos – Global Store</title>
+  <meta name="description" content="Global Store : cartes cadeaux Netflix, Prime Video et recharges Free Fire, PUBG, eFootball, DLS.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="catalogue-public.js" defer></script>
 </head>
 <body>
-<header><div class="wrap">
-  <a class="logo" href="a-propos.html">Global Store</a>
-  <nav>
-    <a class="hide-m" href="#catalogue">Catalogue</a>
-    <a class="hide-m" href="#commande">Comment ça marche</a>
-    <select class="currency-select" id="currencySelect" aria-label="Devise"></select>
-    <a href="connexion.html">Connexion</a>
-    <a class="btn" href="inscription.html">Créer un compte</a>
-  </nav>
-</div></header>
+  
+  <header>
+    <div class="wrap">
+      <a class="logo" href="a-propos.html">Global Store</a>
+      <nav>
+        <a class="hide-m" href="#catalogue">Catalogue</a>
+        <a class="hide-m" href="#commande">Comment ça marche</a>
+        <select class="currency-select" id="currencySelect" aria-label="Devise"></select>
+        <a href="connexion.html">Connexion</a>
+        <a class="btn" href="inscription.html">Créer un compte</a>
+      </nav>
+    </div>
+  </header>
 
-<main>
-<div class="hero"><div class="wrap">
-  <h1>Global<br>Store</h1>
-  <p>Cartes cadeaux et recharges de jeux, livrées en quelques minutes. Un seul endroit pour tout.</p>
-  <div class="cta">
-    <a class="btn" href="inscription.html">Commencer</a>
-    <a class="btn ghost" href="#catalogue">Voir le catalogue</a>
-  </div>
-</div></div>
+  <main>
+    <div class="hero">
+      <div class="wrap">
+        <h1>Global<br>Store</h1>
+        <p>Cartes cadeaux et recharges de jeux, livrées en quelques minutes. Un seul endroit pour tout.</p>
+        <div class="cta">
+          <a class="btn" href="inscription.html">Commencer</a>
+          <a class="btn ghost" href="#catalogue">Voir le catalogue</a>
+        </div>
+      </div>
+    </div>
 
-<section id="catalogue"><div class="wrap">
-  <h2>Ce que vous trouvez chez nous</h2>
-  <div class="product-grid" id="productGrid"></div>
-</div></section>
+    <section id="catalogue">
+      <div class="wrap">
+        <h2>Ce que vous trouvez chez nous</h2>
+        <div class="product-grid" id="productGrid"></div>
+      </div>
+    </section>
 
-<section class="invert" id="commande"><div class="wrap">
-  <h2>Commander prend trois étapes</h2>
-  <div class="steps">
-    <div><b>Créez votre compte</b><p>Inscription gratuite avec votre e-mail.</p></div>
-    <div><b>Choisissez et payez</b><p>Sélectionnez la carte ou la recharge, puis réglez votre commande.</p></div>
-    <div><b>Recevez votre produit</b><p>Le code ou la recharge arrive directement sur votre compte.</p></div>
-  </div>
-</div></section>
+    <section class="invert" id="commande">
+      <div class="wrap">
+        <h2>Commander prend trois étapes</h2>
+        <div class="steps">
+          <div>
+            <b>Créez votre compte</b>
+            <p>Inscription gratuite avec votre e-mail.</p>
+          </div>
+          <div>
+            <b>Choisissez et payez</b>
+            <p>Sélectionnez la carte ou la recharge, puis réglez votre commande.</p>
+          </div>
+          <div>
+            <b>Recevez votre produit</b>
+            <p>Le code ou la recharge arrive directement sur votre compte.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<section><div class="wrap">
-  <h2>Pourquoi Global Store</h2>
-  <div class="cols">
-    <p>Nous rassemblons les cartes et recharges les plus demandées pour que vous n'ayez plus à chercher ailleurs. Chaque commande est suivie depuis votre compte.</p>
-    <p>Notre équipe reste disponible si un code pose problème ou si une recharge tarde. Vous savez toujours où en est votre commande.</p>
-  </div>
-</div></section>
+    <section>
+      <div class="wrap">
+        <h2>Pourquoi Global Store</h2>
+        <div class="cols">
+          <p>Nous rassemblons les cartes et recharges les plus demandées pour que vous n'ayez plus à chercher ailleurs. Chaque commande est suivie depuis votre compte.</p>
+          <p>Notre équipe reste disponible si un code pose problème ou si une recharge tarde. Vous savez toujours où en est votre commande.</p>
+        </div>
+      </div>
+    </section>
 
-<section class="cta-band"><div class="wrap">
-  <h2>Prêt à recharger ?</h2>
-  <a class="btn" href="inscription.html">Créer mon compte</a>
-</div></section>
-</main>
+    <section class="cta-band">
+      <div class="wrap">
+        <h2>Prêt à recharger ?</h2>
+        <a class="btn" href="inscription.html">Créer mon compte</a>
+      </div>
+    </section>
+  </main>
 
-<footer><div class="wrap">
-  <span>© 2026 Global Store</span>
-  <span><a href="connexion.html">Connexion</a> · <a href="inscription.html">Inscription</a></span>
-</div></footer>
+  <footer>
+    <div class="wrap">
+      <span>© 2026 Global Store</span>
+      <span><a href="connexion.html">Connexion</a> · <a href="inscription.html">Inscription</a></span>
+    </div>
+  </footer>
 </body>
 </html>
