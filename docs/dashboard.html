@@ -1,89 +1,100 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tableau de bord – Global Store</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tableau de bord – Global Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="dash-header"><div class="wrap">
-  <a class="logo" href="dashboard.html">Global Store</a>
-  <div class="topbar-extra">
-    <select class="currency-select" id="currencySelect" aria-label="Devise"></select>
-    <div class="user-box">
-      <div class="user-name">
-        <span id="userName">Chargement…</span>
-        <small id="userEmail"></small>
+  <header class="dash-header">
+    <div class="wrap">
+      <a class="logo" href="dashboard.html">Global Store</a>
+      <div class="topbar-extra">
+        <select class="currency-select" id="currencySelect" aria-label="Devise"></select>
+        <div class="user-box">
+          <div class="user-name">
+            <span id="userName">Chargement…</span>
+            <small id="userEmail"></small>
+          </div>
+          <div class="avatar" id="avatar">?</div>
+          <button class="logout" id="logoutBtn">Déconnexion</button>
+        </div>
       </div>
-      <div class="avatar" id="avatar">?</div>
-      <button class="logout" id="logoutBtn">Déconnexion</button>
     </div>
-  </div>
-</div></header>
+  </header>
 
-<main class="dash-wrap">
-  <h1 class="dash-hello" id="hello">Bonjour</h1>
+  <main class="dash-wrap">
+    <h1 class="dash-hello" id="hello">Bonjour</h1>
 
-  <div class="stat-row">
-    <div class="stat">
-      <div class="n" id="statBalance">0 FCFA</div>
-      <div class="l">Solde disponible</div>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="n" id="statBalance">0 FCFA</div>
+        <div class="l">Solde disponible</div>
+      </div>
+      <div class="stat">
+        <div class="n" id="statOrders">0</div>
+        <div class="l">Commandes totales</div>
+      </div>
+      <div class="stat">
+        <div class="n" id="statPending">0</div>
+        <div class="l">En attente</div>
+      </div>
     </div>
-    <div class="stat">
-      <div class="n" id="statOrders">0</div>
-      <div class="l">Commandes totales</div>
-    </div>
-    <div class="stat">
-      <div class="n" id="statPending">0</div>
-      <div class="l">En attente</div>
-    </div>
-  </div>
 
-  <div class="dash-section">
-    <h2>Acheter</h2>
-    <div class="product-grid" id="productGrid"></div>
-  </div>
-
-  <div class="dash-section">
-    <h2>Recharger mon solde</h2>
-    <div class="pay-grid" id="payGrid"></div>
-    <div class="deposit-box">
-      <p class="instructions" id="payInstructions">Choisis un moyen de recharge ci-dessus.</p>
-      <p class="pay-number" id="payNumber"></p>
-      <form id="depositForm">
-        <label for="depositName">Non konplè moun ki voye lajan an</label>
-        <input id="depositName" type="text" required disabled>
-        <label for="depositPhone">Nimewo telefòn ou te voye lajan an avè l</label>
-        <input id="depositPhone" type="tel" required disabled>
-        <label for="depositAmount">Montan ou voye (HTG)</label>
-        <input id="depositAmount" type="number" min="1" step="1" required disabled>
-        <label for="depositRef">Referans/ID tranzaksyon ou resevwa nan SMS</label>
-        <input id="depositRef" type="text" required disabled>
-        <button class="btn" type="submit" id="depositBtn" disabled>Konfime rechaj la</button>
-      </form>
-      <div class="msg" id="depositMsg" role="alert" aria-live="polite"></div>
+    <div class="dash-section">
+      <h2>Acheter</h2>
+      <div class="product-grid" id="productGrid"></div>
     </div>
-  </div>
 
-  <div class="dash-section">
-    <h2>Commandes récentes</h2>
-    <div id="ordersWrap">
-      <table>
-        <thead>
-          <tr><th>Produit</th><th>Date</th><th>Montant</th><th>Statut</th></tr>
-        </thead>
-        <tbody id="ordersBody"></tbody>
-      </table>
-      <p class="empty" id="ordersEmpty" hidden>Aucune commande pour le moment. Choisissez un produit ci-dessus pour commencer.</p>
+    <div class="dash-section">
+      <h2>Recharger mon solde</h2>
+      <div class="pay-grid" id="payGrid"></div>
+      <div class="deposit-box">
+        <p class="instructions" id="payInstructions">Choisis un moyen de recharge ci-dessus.</p>
+        <p class="pay-number" id="payNumber"></p>
+        <form id="depositForm">
+          <label for="depositName">Non konplè moun ki voye lajan an</label>
+          <input id="depositName" type="text" required disabled>
+          
+          <label for="depositPhone">Nimewo telefòn ou te voye lajan an avè l</label>
+          <input id="depositPhone" type="tel" required disabled>
+          
+          <label for="depositAmount">Montan ou voye (HTG)</label>
+          <input id="depositAmount" type="number" min="1" step="1" required disabled>
+          
+          <label for="depositRef">Referans/ID tranzaksyon ou resevwa nan SMS</label>
+          <input id="depositRef" type="text" required disabled>
+          
+          <button class="btn" type="submit" id="depositBtn" disabled>Konfime rechaj la</button>
+        </form>
+        <div class="msg" id="depositMsg" role="alert" aria-live="polite"></div>
+      </div>
     </div>
-  </div>
-</main>
 
-<script type="module" src="dashboard.js"></script>
+    <div class="dash-section">
+      <h2>Commandes récentes</h2>
+      <div id="ordersWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th>Date</th>
+              <th>Montant</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody"></tbody>
+        </table>
+        <p class="empty" id="ordersEmpty" hidden>Aucune commande pour le moment. Choisissez un produit ci-dessus pour commencer.</p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="dashboard.js"></script>
 </body>
 </html>
