@@ -1,54 +1,56 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Acheter – Global Store</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acheter – Global Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="dash-header"><div class="wrap">
-  <a class="logo" href="dashboard.html">Global Store</a>
-  <div class="topbar-extra">
-    <select class="currency-select" id="currencySelect" aria-label="Devise"></select>
-    <a class="btn ghost" href="dashboard.html">Dashboard</a>
-  </div>
-</div></header>
-
-<main class="checkout-wrap">
-  <div class="checkout-head">
-    <span class="product-icon" id="pIcon"></span>
-    <div>
-      <h1 id="pName">—</h1>
-      <p id="pCat"></p>
+  <header class="dash-header">
+    <div class="wrap">
+      <a class="logo" href="dashboard.html">Global Store</a>
+      <div class="topbar-extra">
+        <select class="currency-select" id="currencySelect" aria-label="Devise"></select>
+        <a class="btn ghost" href="dashboard.html">Dashboard</a>
+      </div>
     </div>
-  </div>
+  </header>
 
-  <form id="checkoutForm" class="checkout-form" novalidate>
-    <h2>Chwazi yon pake</h2>
-    <div class="variant-list" id="variantList"></div>
-    <p class="min-note" id="minNote"></p>
-
-    <h2>Enfòmasyon nesesè</h2>
-    <div id="fieldsWrap"></div>
-
-    <div class="summary">
-      <span>
-        <span class="mute">Total</span>
-        <span id="summaryName">Chwazi yon pake</span>
-      </span>
-      <span id="summaryPrice">—</span>
+  <main class="checkout-wrap">
+    <div class="checkout-head">
+      <span class="product-icon" id="pIcon"></span>
+      <div>
+        <h1 id="pName">—</h1>
+        <p id="pCat"></p>
+      </div>
     </div>
 
-    <button class="btn" type="submit" id="submitBtn">Konfime kòmand lan</button>
-    <div class="msg" id="msg" role="alert" aria-live="polite"></div>
-  </form>
-</main>
+    <form id="checkoutForm" class="checkout-form" novalidate>
+      <h2>Chwazi yon pake</h2>
+      <div class="variant-list" id="variantList"></div>
+      <p class="min-note" id="minNote"></p>
 
-<script type="module" src="checkout.js"></script>
+      <h2>Enfòmasyon nesesè</h2>
+      <div id="fieldsWrap"></div>
+
+      <div class="summary">
+        <span>
+          <span class="mute">Total</span>
+          <span id="summaryName">Chwazi yon pake</span>
+        </span>
+        <span id="summaryPrice">—</span>
+      </div>
+
+      <button class="btn" type="submit" id="submitBtn">Konfime kòmand lan</button>
+      <div class="msg" id="msg" role="alert" aria-live="polite"></div>
+    </form>
+  </main>
+
+  <script type="module" src="checkout.js"></script>
 </body>
 </html>
