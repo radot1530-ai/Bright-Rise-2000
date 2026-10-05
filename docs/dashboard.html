@@ -54,12 +54,17 @@
     <div class="pay-grid" id="payGrid"></div>
     <div class="deposit-box">
       <p class="instructions" id="payInstructions">Choisis un moyen de recharge ci-dessus.</p>
+      <p class="pay-number" id="payNumber"></p>
       <form id="depositForm">
-        <label for="depositAmount">Montant envoyé (HTG)</label>
+        <label for="depositName">Non konplè moun ki voye lajan an</label>
+        <input id="depositName" type="text" required disabled>
+        <label for="depositPhone">Nimewo telefòn ou te voye lajan an avè l</label>
+        <input id="depositPhone" type="tel" required disabled>
+        <label for="depositAmount">Montan ou voye (HTG)</label>
         <input id="depositAmount" type="number" min="1" step="1" required disabled>
-        <label for="depositRef">Référence reçue par SMS</label>
+        <label for="depositRef">Referans/ID tranzaksyon ou resevwa nan SMS</label>
         <input id="depositRef" type="text" required disabled>
-        <button class="btn" type="submit" id="depositBtn" disabled>Confirmer la recharge</button>
+        <button class="btn" type="submit" id="depositBtn" disabled>Konfime rechaj la</button>
       </form>
       <div class="msg" id="depositMsg" role="alert" aria-live="polite"></div>
     </div>
