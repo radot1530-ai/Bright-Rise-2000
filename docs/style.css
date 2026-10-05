@@ -198,3 +198,168 @@ th { color: var(--mute); font-weight: 600; font-size: .82rem; }
 @media(prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+/* --- AJISTEMAN HEADER AK DASHBOARD (RESPONSIVE) --- */
+
+.dash-header .wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: auto;
+  min-height: 64px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.topbar-extra {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--fg);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .85rem;
+  flex-shrink: 0;
+}
+
+.user-name {
+  font-size: .85rem;
+  line-height: 1.2;
+}
+
+.user-name small {
+  display: block;
+  color: var(--mute);
+  font-size: .75rem;
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Deposit Box & Form Flex */
+.deposit-box {
+  border: 1px solid var(--line);
+  padding: 20px;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 16px;
+}
+
+/* Tablo Scrollable sou Mobil */
+#ordersWrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  min-width: 500px; /* Anpeche tablo a tasser anpil */
+  border-collapse: collapse;
+}
+
+/* --- MEDIA QUERIES POU TI EKRAN (MOBIL) --- */
+
+@media (max-width: 760px) {
+  .wrap {
+    padding: 0 16px;
+  }
+
+  .dash-wrap {
+    padding: 24px 16px 60px;
+  }
+
+  /* Header Layout sou Mobil */
+  .dash-header .wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .topbar-extra {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .logout {
+    padding: 6px 12px;
+    font-size: .78rem;
+  }
+
+  .currency-select {
+    padding: 6px 10px;
+    font-size: .8rem;
+  }
+
+  /* Stat Row Layout */
+  .stat-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    background: transparent;
+    border: none;
+  }
+
+  .stat {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .stat .n {
+    font-size: 1.8rem;
+  }
+
+  /* Product Grid & Pay Grid */
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    background: transparent;
+    border: none;
+  }
+
+  .product-card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+    min-height: auto;
+  }
+
+  .pay-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    background: transparent;
+    border: none;
+  }
+
+  .pay-card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+  }
+
+  /* Form Inpouts */
+  input {
+    padding: 11px 12px;
+    font-size: .95rem;
+  }
+}
