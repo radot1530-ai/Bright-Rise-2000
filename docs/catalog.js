@@ -52,7 +52,7 @@ export const ICONS = {
   game: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 10v4M5 12h4"/><circle cx="16" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="18.5" cy="14" r="1" fill="currentColor" stroke="none"/></svg>`,
   wallet: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="17" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>`,
   card: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/></svg>`,
-  visa: `<svg viewBox="0 0 120 80" aria-hidden="true"><rect width="120" height="80" fill="#1434cb"/><text x="60" y="52" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="700" font-size="30" fill="#fff" letter-spacing="1">VISA</text></svg>`,
+  visa: `<svg viewBox="0 0 120 80" aria-hidden="true"><rect width="120" height="80" fill="#fff"/><text x="60" y="52" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="700" font-size="30" fill="#000" letter-spacing="1">VISA</text></svg>`,
 };
 
 // Rann HTML ikòn nan : imaj lokal la, ak SVG kòm rezèv (CSS kache SVG a si imaj la chaje).
