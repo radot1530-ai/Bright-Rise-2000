@@ -1,6 +1,6 @@
 import {
   USD_HTG, getProduct, formatPrice, wireCurrencySelect,
-  iconHTML, catLabel, variantLabel, customPriceHTG,
+  iconHTML, catLabel, variantLabel, customPriceHTG, fieldsFor, fieldLabel, isRequired,
 } from "./catalog.js";
 import { t, onLangChange } from "./i18n.js";
 
@@ -15,9 +15,10 @@ const firebaseConfig = {
   measurementId: "G-DEYNQ8GQ9B"
 };
 
+const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const product = getProduct(params.get("product") || "");
-const msg = document.getElementById("msg");
+const msg = $("msg");
 const say = (text, ok = false) => {
   msg.textContent = text;
   msg.className = `msg ${ok ? "ok" : "err"}`;
@@ -30,9 +31,13 @@ if (!product) {
 }
 
 const C = product.custom || null; // { minUSD, maxUSD, presets } pou Méru ak Wise
+const isSub = product.kind === "subscription";
+const wantedMode = params.get("mode");
+let mode = isSub ? (product.modes.includes(wantedMode) ? wantedMode : product.modes[0]) : "new"; // "profile" | "new" | "renew"
 let currentCurrency = "HTG";
 let selectedVariant = C ? null : product.variants[0];
 let customValue = "";
+const prefill = { email: params.get("email") || "", username: params.get("username") || "" };
 
 // --- Seleksyon aktyèl la -------------------------------------------------
 function getSelection() {
@@ -40,13 +45,7 @@ function getSelection() {
     const n = Number(String(customValue).replace(",", "."));
     if (!customValue.trim() || !Number.isFinite(n) || n < C.minUSD || n > C.maxUSD) return null;
     const amount = Math.round(n * 100) / 100;
-    return {
-      id: "custom",
-      label: `${amount} $`,
-      storeLabel: `${amount} $`,
-      amountUSD: amount,
-      priceHTG: customPriceHTG(amount),
-    };
+    return { id: "custom", label: `${amount} $`, storeLabel: `${amount} $`, amountUSD: amount, priceHTG: customPriceHTG(amount) };
   }
   if (!selectedVariant) return null;
   return {
@@ -54,22 +53,36 @@ function getSelection() {
     label: variantLabel(selectedVariant),
     storeLabel: variantLabel(selectedVariant, "ht"), // menm lang ak ansyen kòmand yo
     priceHTG: selectedVariant.priceHTG,
+    months: selectedVariant.type === "months" ? selectedVariant.n : undefined,
   };
 }
 
 // --- Rendu ---------------------------------------------------------------
 function renderHead() {
   document.title = `${product.name} – Global Store`;
-  document.getElementById("pIcon").innerHTML = iconHTML(product);
-  document.getElementById("pName").textContent = product.name;
-  document.getElementById("pCat").textContent = catLabel(product);
+  $("pIcon").innerHTML = iconHTML(product);
+  $("pName").textContent = product.name;
+  $("pCat").textContent = catLabel(product);
+}
+
+function renderMode() {
+  $("modeBlock").hidden = !isSub;
+  if (!isSub) return;
+  $("modeWrap").innerHTML = product.modes.map((m) =>
+    `<button type="button" class="${m === mode ? "active" : ""}" data-mode="${m}" aria-pressed="${m === mode}">${t(`mode.${m}`)}</button>`).join("");
+  $("modeWrap").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    if (mode === b.dataset.mode) return;
+    mode = b.dataset.mode;
+    renderMode();
+    renderFields();
+  }));
 }
 
 function renderPackages(code) {
   if (code) currentCurrency = code;
-  const list = document.getElementById("variantList");
-  const note = document.getElementById("minNote");
-  const title = document.getElementById("pickTitle");
+  const list = $("variantList");
+  const note = $("minNote");
+  const title = $("pickTitle");
 
   if (C) {
     title.textContent = t("co.customLabel");
@@ -84,7 +97,7 @@ function renderPackages(code) {
           ${C.presets.map((n) => `<button type="button" class="chip" data-v="${n}">${n} $</button>`).join("")}
         </div>
       </div>`;
-    const input = document.getElementById("customAmount");
+    const input = $("customAmount");
     input.addEventListener("input", () => { customValue = input.value; updateSummary(); });
     list.querySelectorAll(".chip").forEach((chip) => {
       chip.addEventListener("click", () => {
@@ -96,17 +109,12 @@ function renderPackages(code) {
     note.textContent = t("co.customHint", { min: C.minUSD, max: C.maxUSD, rate: USD_HTG });
   } else {
     title.textContent = t("co.pick");
-    const groups = [...new Set(product.variants.map((v) => v.group || "_"))];
-    list.innerHTML = groups.map((g) => {
-      const heading = groups.length > 1 ? `<h3 class="variant-group">${t(`g.${g}`)}</h3>` : "";
-      const items = product.variants.filter((v) => (v.group || "_") === g).map((v) => `
-        <label class="variant${v.id === selectedVariant.id ? " selected" : ""}">
-          <input type="radio" name="variant" value="${v.id}" ${v.id === selectedVariant.id ? "checked" : ""}>
-          <span class="v-label">${variantLabel(v)}</span>
-          <span class="v-price">${formatPrice(v.priceHTG, currentCurrency)}</span>
-        </label>`).join("");
-      return heading + items;
-    }).join("");
+    list.innerHTML = product.variants.map((v) => `
+      <label class="variant${v.id === selectedVariant.id ? " selected" : ""}">
+        <input type="radio" name="variant" value="${v.id}" ${v.id === selectedVariant.id ? "checked" : ""}>
+        <span class="v-label">${variantLabel(v)}</span>
+        <span class="v-price">${formatPrice(v.priceHTG, currentCurrency)}</span>
+      </label>`).join("");
     list.querySelectorAll('input[name="variant"]').forEach((r) => {
       r.addEventListener("change", () => {
         selectedVariant = product.variants.find((v) => v.id === r.value);
@@ -122,35 +130,65 @@ function renderPackages(code) {
 
 function updateSummary() {
   const sel = getSelection();
-  document.getElementById("summaryName").textContent = sel
-    ? `${product.name} — ${sel.label}`
-    : t(C ? "co.pickAmount" : "co.pickPkg");
-  document.getElementById("summaryPrice").textContent = sel ? formatPrice(sel.priceHTG, currentCurrency) : "—";
+  $("summaryName").textContent = sel ? `${product.name} — ${sel.label}` : t(C ? "co.pickAmount" : "co.pickPkg");
+  $("summaryPrice").textContent = sel ? formatPrice(sel.priceHTG, currentCurrency) : "—";
   document.querySelectorAll(".chip").forEach((chip) =>
     chip.classList.toggle("active", Number(chip.dataset.v) === Number(customValue)));
 }
 
 function renderFields() {
-  document.getElementById("fieldsWrap").innerHTML = product.fields.map((f) => `
-    <label for="f_${f.id}" id="l_${f.id}"></label>
-    <input id="f_${f.id}" type="${f.type}" ${f.required ? "required" : ""}
-           autocomplete="${f.type === "email" ? "email" : "off"}" ${f.id === "identifier" ? 'autocapitalize="none" spellcheck="false"' : ""}>`).join("");
+  // Kenbe sa itilizatè a te deja ekri lè mòd la chanje.
+  const old = {};
+  product.fields.forEach((f) => { const el = $(`f_${f.id}`); if (el) old[f.id] = el.value; });
+  for (const key of ["email", "username"]) if (prefill[key] && old[key] === undefined) old[key] = prefill[key];
+
+  $("fieldsWrap").innerHTML = fieldsFor(product, mode).map((f) => {
+    const attrs = `id="f_${f.id}" type="${f.type}" ${isRequired(f, mode) ? "required" : ""}` +
+      ` autocomplete="${f.type === "email" ? "email" : f.type === "password" ? "off" : "off"}"` +
+      (f.id === "identifier" || f.id === "username" || f.type === "email" ? ' autocapitalize="none" spellcheck="false"' : "");
+    const input = f.type === "password"
+      ? `<div class="pw"><input ${attrs}><button type="button" data-toggle="f_${f.id}"></button></div>`
+      : `<input ${attrs}>`;
+    return `<label for="f_${f.id}" id="l_${f.id}"></label>${input}`;
+  }).join("");
+
+  for (const f of fieldsFor(product, mode)) if (old[f.id] !== undefined) $(`f_${f.id}`).value = old[f.id];
+  document.querySelectorAll("[data-toggle]").forEach((b) => b.addEventListener("click", () => {
+    const input = $(b.dataset.toggle);
+    input.type = input.type === "password" ? "text" : "password";
+    b.textContent = t(input.type === "password" ? "auth.show" : "auth.hide");
+  }));
   updateFieldLabels();
+
+  renderNotes();
+}
+
+function renderNotes() {
+  if (!isSub) { $("subNotes").innerHTML = ""; return; }
+  $("subNotes").innerHTML = mode === "profile"
+    ? `<p class="min-note">${t("sub.profileNote")}</p>`
+    : `<p class="min-note">${t("sub.ownerNote")}</p><p class="min-note">${t("sub.pwNote")}</p>`;
 }
 
 function updateFieldLabels() {
-  for (const f of product.fields) {
-    document.getElementById(`l_${f.id}`).textContent = t(f.label) + (f.required ? "" : ` (${t("f.optional")})`);
+  for (const f of fieldsFor(product, mode)) {
+    $(`l_${f.id}`).textContent = fieldLabel(f, mode) + (isRequired(f, mode) ? "" : ` (${t("f.optional")})`);
   }
+  document.querySelectorAll("[data-toggle]").forEach((b) => {
+    b.textContent = t($(b.dataset.toggle).type === "password" ? "auth.show" : "auth.hide");
+  });
+  renderNotes();
 }
 
 // --- Main ----------------------------------------------------------------
 async function main() {
   renderHead();
+  renderMode();
   renderFields();
-  wireCurrencySelect(document.getElementById("currencySelect"), renderPackages);
+  wireCurrencySelect($("currencySelect"), renderPackages);
   onLangChange(() => {
     renderHead();
+    renderMode();
     updateFieldLabels();
     renderPackages();
     msg.textContent = "";
@@ -174,45 +212,50 @@ async function main() {
     currentUser = user;
   });
 
-  document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
+  $("checkoutForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!currentUser) { say(t("co.loginFirst")); return; }
 
     const sel = getSelection();
     if (!sel) {
       say(C ? t("co.customErr", { min: C.minUSD, max: C.maxUSD }) : t("co.pickPkg"));
-      document.getElementById("customAmount")?.focus();
+      $("customAmount")?.focus();
       return;
     }
 
     const fieldValues = {};
-    for (const f of product.fields) {
-      const input = document.getElementById(`f_${f.id}`);
-      if (f.required && !input.value.trim()) {
-        say(t("co.fillField", { label: t(f.label) }));
+    for (const f of fieldsFor(product, mode)) {
+      const input = $(`f_${f.id}`);
+      const value = input.value.trim();
+      const badEmail = f.type === "email" && value && !input.validity.valid;
+      if ((isRequired(f, mode) && !value) || badEmail) {
+        say(t("co.fillField", { label: fieldLabel(f, mode) }));
         input.focus();
         return;
       }
-      fieldValues[f.id] = input.value.trim();
+      fieldValues[f.id] = f.type === "password" ? input.value : value; // modpas la pa koupe
     }
 
-    const btn = document.getElementById("submitBtn");
+    const btn = $("submitBtn");
     btn.disabled = true;
     try {
-      await F.addDoc(F.collection(db, "orders"), {
+      // Kòmand lan kreye "en attente de paiement" → peman an fèt sou paiement.html
+      const ref = await F.addDoc(F.collection(db, "orders"), {
         uid: currentUser.uid,
         productId: product.id,
         product: product.name,
+        kind: product.kind,
         variantId: sel.id,
         variantLabel: sel.storeLabel,
         amount: sel.priceHTG,
         ...(sel.amountUSD ? { amountUSD: sel.amountUSD, rateUSD: USD_HTG } : {}),
+        ...(isSub ? { months: sel.months, mode } : {}),
         fields: fieldValues,
-        status: "en attente",
+        status: "en attente de paiement",
         createdAt: Date.now(),
       });
-      say(t("co.saved"), true);
-      setTimeout(() => (location.href = "dashboard.html"), 900);
+      say(t("co.redirect"), true);
+      setTimeout(() => (location.href = `paiement.html?order=${ref.id}`), 500);
     } catch {
       say(t("co.fail"));
       btn.disabled = false;
