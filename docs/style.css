@@ -317,6 +317,68 @@ tbody tr:last-child td { border-bottom: 0; }
   .currency-select, .lang-select { padding: 0 4px; }
 }
 
+/* ======================================================================
+   Peman · abònman · rechaj (noir et blanc)
+   ====================================================================== */
+.strong { color: var(--text); font-weight: 800; }
+.status.unpaid { color: #fff; background: transparent; border-color: #fff; }
+.status.bad { color: var(--mute); background: transparent; border-color: #4a4a4a; text-decoration: line-through; }
+.row-link { margin-left: 10px; font-size: .85rem; font-weight: 700; color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.empty.box { margin-top: 12px; }
+.sub-title { margin: 28px 0 12px; font-size: 1.05rem; font-weight: 800; }
+
+/* Chwazi tip sèvis (nouvo kont / renouvle) */
+.seg { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.seg button { flex: 1 1 140px; min-height: 48px; padding: 6px 10px; border: 0; border-radius: 9px; background: transparent; color: var(--mute); font-weight: 700; line-height: 1.2; cursor: pointer; transition: background .15s, color .15s; }
+.seg button:hover { color: var(--text); }
+.seg button.active { background: #fff; color: #000; }
+
+.forgot { display: inline-block; margin-top: 14px; font-size: .9rem; font-weight: 600; color: var(--mute); text-decoration: underline; text-underline-offset: 3px; }
+.forgot:hover { color: #fff; }
+
+/* Paj peman */
+.pay-option { margin-top: 28px; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.pay-option > h2 { margin: 0 0 12px; font-size: 1.15rem; font-weight: 800; }
+.pay-option .btn { margin-top: 16px; }
+.pay-option .btn + .btn { margin-top: 10px; }
+.pay-option .deposit-box { margin-top: 16px; padding: 0; background: transparent; border: 0; }
+.pay-option .pay-grid { max-width: none; }
+.or { display: flex; align-items: center; gap: 14px; margin: 22px 0 0; color: var(--mute); font-weight: 600; }
+.or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.pay-option + .or + .pay-option { margin-top: 22px; }
+.copy-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.copy-row .pay-number { margin-top: 0; }
+.copy-btn { min-height: 36px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: transparent; font-size: .85rem; font-weight: 700; cursor: pointer; transition: border-color .15s, background .15s; }
+.copy-btn:hover { border-color: #fff; background: var(--surface-2); }
+
+/* Monitè ekspirasyon */
+.alert-banner { margin-top: 16px; padding: 14px 16px; border: 1px solid #fff; border-radius: var(--radius); background: #fff; color: #000; font-weight: 700; }
+.alert-banner.soon { background: transparent; color: #fff; }
+.sub-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.sub-card { padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.sub-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.sub-name { font-size: 1.1rem; font-weight: 800; }
+.sub-acct { margin-top: 2px; color: var(--mute); font-size: .85rem; overflow-wrap: anywhere; }
+.sub-time { margin-top: 14px; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.sub-card.expired .sub-time { color: var(--mute); }
+.bar { height: 6px; margin-top: 12px; overflow: hidden; border-radius: 999px; background: var(--surface-2); }
+.bar i { display: block; width: 0; height: 100%; background: #fff; transition: width 1s linear; }
+.sub-card.expired .bar i { background: #4a4a4a; }
+.sub-exp { margin-top: 10px; color: var(--mute); font-size: .85rem; }
+.sub-card .btn { width: 100%; margin-top: 14px; }
+
+/* Lis (istwa rechaj) */
+.list { display: grid; gap: 8px; }
+.list-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.row-main { font-weight: 700; }
+.row-sub { margin-top: 2px; color: var(--mute); font-size: .82rem; overflow-wrap: anywhere; }
+
+@media (min-width: 640px) {
+  .sub-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  .pay-option { padding: 26px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
 }
