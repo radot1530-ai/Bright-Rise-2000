@@ -78,7 +78,18 @@ export const FIELD_SETS = {
     { id: "identifier", label: "f.wiseId", type: "text", required: true },
     { id: "note", label: "f.note", type: "text", required: false },
   ],
+  // Abònman (Netflix, Prime Video, Disney+) : e-mail + non itilizatè + modpas (kòd).
+  // modes = nan ki mòd chan an parèt ("new" = nouvo kont pèsonèl, "renew" = renouvle kont ki egziste).
+  // Mòd : "profile" = pwofil sou yon kont pataje (Netflix), "new" = nouvo kont pèsonèl, "renew" = renouvle kont ki egziste.
+  subscription: [
+    { id: "email", label: "f.subEmail", labelByMode: { profile: "f.contactEmail" }, type: "email", required: true, optionalIn: ["profile"] },
+    { id: "username", label: "f.subUser", labelByMode: { profile: "f.profileName" }, type: "text", required: true, modes: ["new", "profile"] },
+    { id: "password", label: "f.subPassNew", labelByMode: { new: "f.subPassNew", renew: "f.subPassRenew", profile: "f.profilePin" }, type: "password", required: true },
+  ],
 };
+
+export const SUB_MODES = ["new", "renew"];
+export const SUB_MODES_NETFLIX = ["profile", "new", "renew"]; // Netflix : yon kont ka gen plizyè pwofil
 
 // --- Pake yo -------------------------------------------------------------
 const usd = (n) => Math.round(n * USD_HTG);
@@ -86,62 +97,76 @@ const months = (list) => list.map(([n, priceHTG]) => ({ id: `${n}m`, group: "sub
 const usdCards = (list) => list.map((n) => ({ id: `${n}usd`, group: "gift", type: "usd", amount: n, priceHTG: usd(n) }));
 const raw = (list) => list.map(([id, label, priceHTG]) => ({ id, type: "raw", label, priceHTG }));
 
+// Pri abònman pa mwa an HTG : [mwa, pri].
+// ⚠ Prime Video ak Disney+ : pri PWOVIZWA (menm ak Netflix). Chanje yo isit la.
+const SUB_PRICES = {
+  netflix: [[1, 500], [2, 1000], [3, 1500], [6, 3000], [12, 6000]],
+  primeVideo: [[1, 500], [2, 1000], [3, 1500], [6, 3000], [12, 6000]],
+  disney: [[1, 500], [2, 1000], [3, 1500], [6, 3000], [12, 6000]],
+};
+
 // Montan lib pou Méru ak Wise : minimòm 5 $, maksimòm 100 $.
 const CUSTOM_USD = { minUSD: 5, maxUSD: 100, presets: [5, 10, 25, 50, 100] };
 
 // --- Katalòg ---------------------------------------------------------------
 export const PRODUCTS = [
+  // ---- Abònman (pa mwa) — kat kado yo apa pi ba a ----
   {
-    id: "netflix", name: "Netflix", catKeys: ["cat.sub", "cat.gift"], icon: "giftcard", img: "netflix.png",
-    fields: FIELD_SETS.giftcard,
-    variants: [
-      ...months([[1, 500], [2, 1000], [3, 1500], [6, 3000], [12, 6000]]),
-      ...usdCards([15, 25, 50, 100]),
-    ],
+    id: "netflix", kind: "subscription", name: "Netflix", catKeys: ["cat.sub"], icon: "card", img: "netflix.png",
+    fields: FIELD_SETS.subscription, modes: SUB_MODES_NETFLIX,
+    variants: months(SUB_PRICES.netflix),
   },
   {
-    id: "prime-video", name: "Prime Video", catKeys: ["cat.gift"], icon: "giftcard", img: "primevideo.jpg",
-    fields: FIELD_SETS.giftcard,
-    variants: usdCards([15, 20, 25, 50, 100]),
+    id: "prime-video", kind: "subscription", name: "Prime Video", catKeys: ["cat.sub"], icon: "card", img: "primevideo.jpg",
+    fields: FIELD_SETS.subscription, modes: SUB_MODES,
+    variants: months(SUB_PRICES.primeVideo),
   },
   {
-    id: "disney", name: "Disney+", catKeys: ["cat.gift"], icon: "giftcard", img: "disney.png",
+    id: "disney", kind: "subscription", name: "Disney+", catKeys: ["cat.sub"], icon: "card", img: "disney.png",
+    fields: FIELD_SETS.subscription, modes: SUB_MODES,
+    variants: months(SUB_PRICES.disney),
+  },
+  // ---- Kat kado (sèlman Netflix ak Visa) ----
+  {
+    id: "netflix-card", kind: "giftcard", name: "Netflix", catKeys: ["cat.gift"], icon: "giftcard", img: "netflix.png",
     fields: FIELD_SETS.giftcard,
-    variants: usdCards([25, 50, 100]),
+    variants: usdCards([15, 25, 50, 100]),
   },
   {
-    id: "visa", name: "Visa", catKeys: ["cat.gift"], icon: "visa", img: null,
+    id: "visa", kind: "giftcard", name: "Visa", catKeys: ["cat.gift"], icon: "visa", img: null,
     fields: FIELD_SETS.giftcard,
     variants: usdCards([10, 25, 50, 100]),
   },
+  // ---- Jwèt ----
   {
-    id: "free-fire", name: "Free Fire", catKeys: ["cat.diamonds"], icon: "game", img: "freefire.jpg",
+    id: "free-fire", kind: "topup", name: "Free Fire", catKeys: ["cat.diamonds"], icon: "game", img: "freefire.jpg",
     fields: FIELD_SETS.topup,
     variants: raw([["100", "100 💎", 150], ["310", "310 💎", 450], ["520", "520 💎", 750], ["1060", "1060 💎", 1500]]),
   },
   {
-    id: "pubg", name: "PUBG", catKeys: ["cat.uc"], icon: "game", img: "pubg.jpg",
+    id: "pubg", kind: "topup", name: "PUBG", catKeys: ["cat.uc"], icon: "game", img: "pubg.jpg",
     fields: FIELD_SETS.topup,
     variants: raw([["60", "60 UC", 150], ["325", "325 UC", 750], ["660", "660 UC", 1500], ["1800", "1800 UC", 3750]]),
   },
   {
-    id: "efootball", name: "eFootball", catKeys: ["cat.coins"], icon: "game", img: "efootball.png",
+    id: "efootball", kind: "topup", name: "eFootball", catKeys: ["cat.coins"], icon: "game", img: "efootball.png",
     fields: FIELD_SETS.topup,
     variants: raw([["125", "125 coins", 150], ["250", "250 coins", 300], ["525", "525 coins", 600], ["1050", "1050 coins", 1150]]),
   },
   {
-    id: "dls", name: "DLS", catKeys: ["cat.diamonds"], icon: "game", img: "dls.jpg",
+    id: "dls", kind: "topup", name: "DLS", catKeys: ["cat.diamonds"], icon: "game", img: "dls.jpg",
     fields: FIELD_SETS.topup,
     variants: raw([["140", "140 💎", 150], ["300", "300 💎", 300], ["700", "700 💎", 650]]),
   },
+  // ---- Pòtfèy (montan lib 5 $ – 100 $) ----
   {
-    id: "meru", name: "Méru", catKeys: ["cat.topup"], icon: "wallet", img: "meru.png",
+    id: "meru", kind: "wallet", name: "Méru", catKeys: ["cat.topup"], icon: "wallet", img: "meru.png",
     fields: FIELD_SETS.meru,
     custom: CUSTOM_USD,
     variants: [],
   },
   {
-    id: "wise", name: "Wise", catKeys: ["cat.topup"], icon: "wallet", img: "wise.jpg",
+    id: "wise", kind: "wallet", name: "Wise", catKeys: ["cat.topup"], icon: "wallet", img: "wise.jpg",
     fields: FIELD_SETS.wise,
     custom: CUSTOM_USD,
     variants: [],
@@ -149,6 +174,11 @@ export const PRODUCTS = [
 ];
 
 export const getProduct = (id) => PRODUCTS.find((p) => p.id === id);
+// Chan ki aplike selon mòd la (nouvo kont / renouvle) ak etikèt li.
+export const fieldsFor = (p, mode) => p.fields.filter((f) => !f.modes || !p.modes || f.modes.includes(mode));
+export const isRequired = (f, mode) => !!f.required && !(f.optionalIn || []).includes(mode);
+export const fieldLabel = (f, mode) => t(f.labelByMode?.[mode] || f.label);
+
 export const catLabel = (p) => p.catKeys.map((k) => t(k)).join(" · ");
 
 export function variantLabel(v, lang) {
@@ -205,5 +235,14 @@ export function renderPaymentMethods(container, onSelect) {
       btn.classList.add("active");
       onSelect(PAYMENT_METHODS.find((m) => m.id === btn.dataset.id));
     });
+  });
+}
+
+// --- Bouton "Kopye" ---------------------------------------------------------
+export function wireCopy(btn, getText) {
+  btn.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(getText()); } catch { return; }
+    btn.textContent = t("common.copied");
+    setTimeout(() => { btn.textContent = t("common.copy"); }, 1500);
   });
 }
