@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0f1f">
+  <meta name="theme-color" content="#000000">
   <title data-i18n="title.checkout">Acheter – Global Store</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,12 +34,18 @@
     </div>
 
     <form id="checkoutForm" class="checkout-form" novalidate>
+      <div id="modeBlock" hidden>
+        <h2 data-i18n="co.mode">Type de service</h2>
+        <div class="seg" id="modeWrap" role="group"></div>
+      </div>
+
       <h2 id="pickTitle" data-i18n="co.pick">Choisir un pack</h2>
       <div class="variant-list" id="variantList"></div>
       <p class="min-note" id="minNote"></p>
 
       <h2 data-i18n="co.info">Informations nécessaires</h2>
       <div id="fieldsWrap"></div>
+      <div id="subNotes"></div>
 
       <div class="summary">
         <span>
