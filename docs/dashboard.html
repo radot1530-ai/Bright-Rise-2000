@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0f1f">
+  <meta name="theme-color" content="#000000">
   <title data-i18n="title.dashboard">Tableau de bord – Global Store</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,6 +40,8 @@
   <main class="dash-wrap">
     <h1 class="dash-hello" id="hello">&nbsp;</h1>
 
+    <div id="expiryBanners" aria-live="polite"></div>
+
     <div class="stat-row">
       <div class="stat stat-balance">
         <div class="n" id="statBalance">—</div>
@@ -55,17 +57,25 @@
       </div>
     </div>
 
+    <div class="dash-section" id="subSection" hidden>
+      <h2 data-i18n="dash.subs">Mes abonnements</h2>
+      <div class="sub-grid" id="subGrid"></div>
+    </div>
+
     <div class="dash-section">
       <h2 data-i18n="dash.buy">Acheter</h2>
       <div class="product-grid" id="productGrid"></div>
     </div>
 
-    <div class="dash-section">
+    <div class="dash-section" id="topup">
       <h2 data-i18n="dash.topup">Recharger mon solde</h2>
       <div class="pay-grid" id="payGrid"></div>
       <div class="deposit-box">
         <p class="instructions" id="payInstructions"></p>
-        <p class="pay-number" id="payNumber"></p>
+        <div class="copy-row">
+          <p class="pay-number" id="payNumber"></p>
+          <button class="copy-btn" id="copyBtn" type="button" hidden data-i18n="common.copy">Copier</button>
+        </div>
         <form id="depositForm" novalidate>
           <label for="depositName" data-i18n="dep.name">Nom complet de la personne qui a envoyé l'argent</label>
           <input id="depositName" type="text" autocomplete="name" required disabled>
@@ -83,6 +93,10 @@
         </form>
         <div class="msg" id="depositMsg" role="alert" aria-live="polite"></div>
       </div>
+
+      <h3 class="sub-title" data-i18n="dash.deposits">Mes recharges</h3>
+      <div class="list" id="depositList"></div>
+      <p class="empty box" id="depositEmpty" data-i18n="dash.noDeposits">Aucune recharge pour le moment.</p>
     </div>
 
     <div class="dash-section">
