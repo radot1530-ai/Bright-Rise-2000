@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="robots" content="noindex">
+  <title data-i18n="title.pay">Paiement – Global Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="i18n.js"></script>
+</head>
+<body>
+
+  <header class="dash-header">
+    <div class="wrap">
+      <a class="logo" href="dashboard.html">Global Store</a>
+      <div class="topbar-extra">
+        <select class="currency-select" id="currencySelect" data-i18n-aria="cur.label" aria-label="Devise"></select>
+        <select class="lang-select" id="langSelect" data-i18n-aria="lang.label" aria-label="Langue"></select>
+        <a class="btn ghost" href="dashboard.html" data-i18n="nav.dashboard">Tableau de bord</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="checkout-wrap">
+    <h1 class="dash-hello" data-i18n="pay.title">Finaliser le paiement</h1>
+
+    <div class="summary">
+      <span>
+        <span class="mute" data-i18n="pay.order">Commande</span>
+        <span id="orderName">—</span>
+      </span>
+      <span id="orderPrice">—</span>
+    </div>
+
+    <div class="empty box" id="payState" hidden></div>
+
+    <div id="payBody" hidden>
+      <section class="pay-option">
+        <h2 data-i18n="pay.balanceTitle">Payer avec mon solde</h2>
+        <p class="mute"><span data-i18n="pay.balance">Solde disponible</span> : <b class="strong" id="payBalance">—</b></p>
+        <p class="msg err" id="balanceNote" hidden></p>
+        <button class="btn" type="button" id="payBalanceBtn" disabled></button>
+        <a class="btn ghost" id="topupLink" href="dashboard.html#topup" hidden data-i18n="pay.topupLink">Recharger mon solde</a>
+        <div class="msg" id="balanceMsg" role="alert" aria-live="polite"></div>
+      </section>
+
+      <div class="or" data-i18n="pay.or">ou</div>
+
+      <section class="pay-option">
+        <h2 data-i18n="pay.mobileTitle">Payer par MonCash ou NatCash</h2>
+        <div class="pay-grid" id="payGrid"></div>
+        <div class="deposit-box">
+          <p class="instructions" id="payInstructions"></p>
+          <div class="copy-row">
+            <p class="pay-number" id="payNumber"></p>
+            <button class="copy-btn" id="copyBtn" type="button" hidden data-i18n="common.copy">Copier</button>
+          </div>
+          <form id="mobileForm" novalidate>
+            <label for="mName" data-i18n="dep.name">Nom complet de la personne qui a envoyé l'argent</label>
+            <input id="mName" type="text" autocomplete="name" required disabled>
+
+            <label for="mPhone" data-i18n="dep.phone">Numéro de téléphone utilisé pour l'envoi</label>
+            <input id="mPhone" type="tel" autocomplete="tel" required disabled>
+
+            <label for="mRef" data-i18n="dep.ref">Référence / ID de transaction reçu par SMS</label>
+            <input id="mRef" type="text" autocomplete="off" required disabled>
+
+            <button class="btn" type="submit" id="mBtn" disabled data-i18n="pay.btnMobile">J'ai envoyé le paiement</button>
+          </form>
+          <div class="msg" id="mobileMsg" role="alert" aria-live="polite"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="paiement.js"></script>
+</body>
+</html>
