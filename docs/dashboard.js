@@ -1,6 +1,4 @@
-import {
-  formatPrice, wireCurrencySelect, renderProducts, renderPaymentMethods, wireCopy, PAYMENT_METHODS,
-} from "./catalog.js";
+import { formatPrice, wireCurrencySelect, renderProducts } from "./catalog.js";
 import { t, formatDate, onLangChange } from "./i18n.js";
 
 const firebaseConfig = {
@@ -33,10 +31,8 @@ let currentCurrency = "HTG";
 let currentUser = null;
 let balanceHTG = 0;
 let orders = [];
-let deposits = [];
 let subs = [];
 let subCards = [];
-let selectedMethod = null;
 let lastBanner = null;
 
 // --- Estati ---------------------------------------------------------------
@@ -47,14 +43,8 @@ function statusInfo(o) {
   if (o.status === UNPAID) return { cls: "unpaid", label: t("status.unpaid") };
   if (o.status === "payé") return { cls: "pending", label: t("status.paid") };
   if (o.status === "vérification") return { cls: "pending", label: t("status.verifying") };
+  if (o.status === "annulé") return { cls: "bad", label: t("dep.st.rejected") };
   return { cls: "pending", label: t("status.pending") };
-}
-
-function depositInfo(d) {
-  const s = String(d.status || "").toLowerCase();
-  if (["crédité", "credite", "ok", "approuvé", "livré"].includes(s)) return { cls: "ok", label: t("dep.st.ok") };
-  if (["rejeté", "refusé", "annulé"].includes(s)) return { cls: "bad", label: t("dep.st.rejected") };
-  return { cls: "pending", label: t("dep.st.pending") };
 }
 
 const orderTitle = (o) => {
@@ -70,8 +60,17 @@ function renderOrders() {
   $("ordersEmpty").hidden = !!orders.length;
   for (const o of orders) {
     const tr = document.createElement("tr");
+
+    // Pwodui (+ kòd / mesaj livrezon an si admin lan mete youn)
+    const tdProduct = el("td");
+    tdProduct.dataset.label = t("col.product");
+    const wrap = el("span");
+    wrap.append(orderTitle(o));
+    if (o.deliveryNote && isDelivered(o)) wrap.append(el("div", "row-sub", o.deliveryNote));
+    tdProduct.appendChild(wrap);
+    tr.appendChild(tdProduct);
+
     const cells = [
-      [t("col.product"), orderTitle(o)],
       [t("col.date"), formatDate(o.createdAt)],
       [t("col.amount"), formatPrice(o.amount ?? 0, currentCurrency)],
     ];
@@ -80,6 +79,7 @@ function renderOrders() {
       td.dataset.label = label;
       tr.appendChild(td);
     }
+
     const td = el("td");
     td.dataset.label = t("col.status");
     const info = statusInfo(o);
@@ -94,28 +94,9 @@ function renderOrders() {
   }
 }
 
-// --- Rechaj yo (istwa) ------------------------------------------------------
-function renderDeposits() {
-  const list = $("depositList");
-  list.innerHTML = "";
-  $("depositEmpty").hidden = !!deposits.length;
-  for (const d of deposits) {
-    const row = el("div", "list-row");
-    const left = el("div");
-    const method = PAYMENT_METHODS.find((m) => m.id === d.method)?.name || d.method || "";
-    left.append(
-      el("div", "row-main", `${method} · ${formatPrice(d.amount ?? 0, currentCurrency)}`),
-      el("div", "row-sub", `${formatDate(d.createdAt)}${d.reference ? ` · ${d.reference}` : ""}`),
-    );
-    const info = depositInfo(d);
-    row.append(left, el("span", `status ${info.cls}`, info.label));
-    list.appendChild(row);
-  }
-}
-
 // --- Monitè abònman yo ----------------------------------------------------
 // Dat ekspirasyon : o.expiresAt si admin mete l; sinon (activatedAt | deliveredAt | createdAt) + mwa.
-// Renouvèlman pou menm kont lan (menm pwodui + menm e-mail) ajoute sou dat ekspirasyon ki egziste a.
+// Renouvèlman pou menm kont lan (menm pwodui + menm e-mail / non itilizatè) ajoute sou dat ekspirasyon ki egziste a.
 function computeSubs(list) {
   const groups = new Map();
   list
@@ -218,22 +199,12 @@ function renderUser() {
 const renderBalance = () => { $("statBalance").textContent = formatPrice(balanceHTG, currentCurrency); };
 const renderProductGrid = () => renderProducts($("productGrid"), currentCurrency, (p) => `checkout.html?product=${p.id}`);
 
-function renderPayText() {
-  $("payInstructions").textContent = selectedMethod
-    ? t("pay.instr", { name: selectedMethod.name })
-    : t("dash.pickMethod");
-  $("payNumber").textContent = selectedMethod?.number ? t("dash.number", { n: selectedMethod.number }) : "";
-  $("copyBtn").hidden = !selectedMethod;
-}
-
 function renderAll() {
   renderUser();
   renderBalance();
   renderProductGrid();
   renderOrders();
-  renderDeposits();
   renderSubs();
-  renderPayText();
 }
 
 function onCurrency(code) {
@@ -241,65 +212,13 @@ function onCurrency(code) {
   renderBalance();
   renderProductGrid();
   renderOrders();
-  renderDeposits();
-}
-
-// --- Rechaj solde (MonCash / NatCash) ---------------------------------------
-function wireDeposit() {
-  const name = $("depositName");
-  const phone = $("depositPhone");
-  const amount = $("depositAmount");
-  const ref = $("depositRef");
-  const btn = $("depositBtn");
-  const inputs = [name, phone, amount, ref, btn];
-  const msg = $("depositMsg");
-  const say = (text, ok = false) => { msg.textContent = text; msg.className = `msg ${ok ? "ok" : "err"}`; };
-
-  wireCopy($("copyBtn"), () => selectedMethod?.number || "");
-  renderPaymentMethods($("payGrid"), (method) => {
-    selectedMethod = method;
-    renderPayText();
-    inputs.forEach((el) => (el.disabled = false));
-  });
-
-  $("depositForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (!selectedMethod) return;
-    if (!name.value.trim()) return say(t("dep.errName"));
-    if (!phone.value.trim()) return say(t("dep.errPhone"));
-    if (!amount.value || Number(amount.value) <= 0) return say(t("dep.errAmount"));
-    if (!ref.value.trim()) return say(t("dep.errRef"));
-    btn.disabled = true;
-    const deposit = {
-      method: selectedMethod.id,
-      senderName: name.value.trim(),
-      senderPhone: phone.value.trim(),
-      amount: Math.round(Number(amount.value)),
-      reference: ref.value.trim().toUpperCase(),
-    };
-    try {
-      await window.__gsSaveDeposit?.(deposit);
-      say(t("dep.ok"), true);
-      deposits.unshift({ ...deposit, status: "en attente", createdAt: Date.now() });
-      renderDeposits();
-      $("depositForm").reset();
-      inputs.forEach((el) => (el.disabled = true));
-      selectedMethod = null;
-      $("payGrid").querySelectorAll(".pay-card").forEach((b) => b.classList.remove("active"));
-      renderPayText();
-    } catch {
-      say(t("dep.fail"));
-      btn.disabled = false;
-    }
-  });
 }
 
 // --- Main ----------------------------------------------------------------
 async function main() {
   wireCurrencySelect($("currencySelect"), onCurrency);
-  wireDeposit();
   renderAll();
-  onLangChange(() => { $("depositMsg").textContent = ""; $("copyBtn").textContent = t("common.copy"); renderAll(); });
+  onLangChange(renderAll);
   setInterval(tick, 1000);
 
   const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
@@ -323,17 +242,18 @@ async function main() {
     currentUser = user;
     renderUser();
 
-    window.__gsSaveDeposit = (deposit) => F.addDoc(F.collection(db, "deposits"), {
-      ...deposit,
-      uid: user.uid,
-      status: "en attente",
-      createdAt: Date.now(),
-    });
-
-    // Solde
+    // Solde + wòl + pwofil (admin an wè e-mail kliyan an gras a sa)
     try {
-      const userSnap = await F.getDoc(F.doc(db, "users", user.uid));
-      balanceHTG = userSnap.exists() ? Number(userSnap.data().balance) || 0 : 0;
+      const userRef = F.doc(db, "users", user.uid);
+      const snap = await F.getDoc(userRef);
+      const u = snap.exists() ? snap.data() : {};
+      balanceHTG = Number(u.balance) || 0;
+      if (u.role === "admin") $("adminLink").hidden = false;
+      const email = user.email || "";
+      const displayName = user.displayName || "";
+      if (u.email !== email || (u.displayName || "") !== displayName) {
+        F.setDoc(userRef, { email, displayName }, { merge: true }).catch(() => {});
+      }
     } catch {
       balanceHTG = 0;
     }
@@ -350,20 +270,11 @@ async function main() {
       const snap = await F.getDocs(q);
       orders = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
       $("statOrders").textContent = orders.length;
-      $("statPending").textContent = orders.filter((o) => !isDelivered(o)).length;
+      $("statPending").textContent = orders.filter((o) => !isDelivered(o) && o.status !== "annulé").length;
     } catch {
       orders = [];
     }
     renderOrders();
-
-    // Istwa rechaj yo (pa bezwen endèks konpoze : filtre egalite sèlman)
-    try {
-      const snap = await F.getDocs(F.query(F.collection(db, "deposits"), F.where("uid", "==", user.uid), F.limit(20)));
-      deposits = snap.docs.map((d) => d.data()).sort((a, b) => ms(b.createdAt) - ms(a.createdAt));
-    } catch {
-      deposits = [];
-    }
-    renderDeposits();
 
     // Abònman aktif yo (monitè)
     try {
