@@ -18,6 +18,7 @@
       <a class="logo" href="dashboard.html">Global Store</a>
 
       <div class="topbar-extra">
+        <a class="btn ghost" id="adminLink" href="admin.html" hidden>Admin</a>
         <select class="currency-select" id="currencySelect" data-i18n-aria="cur.label" aria-label="Devise"></select>
         <select class="lang-select" id="langSelect" data-i18n-aria="lang.label" aria-label="Langue"></select>
 
@@ -57,6 +58,8 @@
       </div>
     </div>
 
+    <a class="btn" style="display:flex;margin-top:16px" href="recharge.html" data-i18n="pay.topupLink">Recharger mon solde</a>
+
     <div class="dash-section" id="subSection" hidden>
       <h2 data-i18n="dash.subs">Mes abonnements</h2>
       <div class="sub-grid" id="subGrid"></div>
@@ -65,38 +68,6 @@
     <div class="dash-section">
       <h2 data-i18n="dash.buy">Acheter</h2>
       <div class="product-grid" id="productGrid"></div>
-    </div>
-
-    <div class="dash-section" id="topup">
-      <h2 data-i18n="dash.topup">Recharger mon solde</h2>
-      <div class="pay-grid" id="payGrid"></div>
-      <div class="deposit-box">
-        <p class="instructions" id="payInstructions"></p>
-        <div class="copy-row">
-          <p class="pay-number" id="payNumber"></p>
-          <button class="copy-btn" id="copyBtn" type="button" hidden data-i18n="common.copy">Copier</button>
-        </div>
-        <form id="depositForm" novalidate>
-          <label for="depositName" data-i18n="dep.name">Nom complet de la personne qui a envoyé l'argent</label>
-          <input id="depositName" type="text" autocomplete="name" required disabled>
-
-          <label for="depositPhone" data-i18n="dep.phone">Numéro de téléphone utilisé pour l'envoi</label>
-          <input id="depositPhone" type="tel" autocomplete="tel" required disabled>
-
-          <label for="depositAmount" data-i18n="dep.amount">Montant envoyé (HTG)</label>
-          <input id="depositAmount" type="number" inputmode="numeric" min="1" step="1" required disabled>
-
-          <label for="depositRef" data-i18n="dep.ref">Référence / ID de transaction reçu par SMS</label>
-          <input id="depositRef" type="text" autocomplete="off" required disabled>
-
-          <button class="btn" type="submit" id="depositBtn" disabled data-i18n="dep.submit">Confirmer la recharge</button>
-        </form>
-        <div class="msg" id="depositMsg" role="alert" aria-live="polite"></div>
-      </div>
-
-      <h3 class="sub-title" data-i18n="dash.deposits">Mes recharges</h3>
-      <div class="list" id="depositList"></div>
-      <p class="empty box" id="depositEmpty" data-i18n="dash.noDeposits">Aucune recharge pour le moment.</p>
     </div>
 
     <div class="dash-section">
