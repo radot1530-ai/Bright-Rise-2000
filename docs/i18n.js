@@ -217,6 +217,9 @@ const DICT = {
     "f.profileName": "Nom du profil souhaité",
     "f.profilePin": "Mot de passe / code PIN du profil",
     "sub.profileNote": "Nous vous donnons accès à un compte Netflix qui peut contenir plusieurs profils. Indiquez le nom et le mot de passe (ou code PIN) que vous voulez pour votre profil.",
+    "f.subPin": "Code PIN (4 chiffres)",
+    "sub.pinNote": "Le code PIN protège votre profil. Retenez-le : il vous sera demandé pour y accéder.",
+    "co.badPin": "Le code PIN doit contenir exactement 4 chiffres.",
   },
 
   // ------------------------------------------------------------------ EN
@@ -422,6 +425,9 @@ const DICT = {
     "f.profileName": "Profile name you want",
     "f.profilePin": "Profile password / PIN",
     "sub.profileNote": "We give you access to a Netflix account that holds several profiles. Enter the name and password (or PIN) you want for your profile.",
+    "f.subPin": "PIN code (4 digits)",
+    "sub.pinNote": "The PIN protects your profile. Remember it: you'll need it to access the profile.",
+    "co.badPin": "The PIN must be exactly 4 digits.",
   },
 
   // ------------------------------------------------------------------ HT
@@ -627,6 +633,9 @@ const DICT = {
     "f.profileName": "Non pwofil ou vle a",
     "f.profilePin": "Modpas / kòd PIN pwofil la",
     "sub.profileNote": "Nou ba w aksè sou yon kont Netflix ki ka gen plizyè pwofil. Mete non an ak modpas (oswa PIN) ou vle pou pwofil ou a.",
+    "f.subPin": "Kòd PIN (4 chif)",
+    "sub.pinNote": "Kòd PIN lan pwoteje pwofil ou a. Sonje l : w ap bezwen l pou antre nan pwofil la.",
+    "co.badPin": "Kòd PIN lan dwe gen egzakteman 4 chif.",
   },
 };
 
