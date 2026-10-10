@@ -78,13 +78,15 @@ export const FIELD_SETS = {
     { id: "identifier", label: "f.wiseId", type: "text", required: true },
     { id: "note", label: "f.note", type: "text", required: false },
   ],
-  // Abònman (Netflix, Prime Video, Disney+) : e-mail + non itilizatè + modpas (kòd).
-  // modes = nan ki mòd chan an parèt ("new" = nouvo kont pèsonèl, "renew" = renouvle kont ki egziste).
-  // Mòd : "profile" = pwofil sou yon kont pataje (Netflix), "new" = nouvo kont pèsonèl, "renew" = renouvle kont ki egziste.
+  // Abònman (Netflix, Prime Video, Disney+). modes = nan ki mòd chan an parèt :
+  //  • "new"     = nouvo kont pèsonèl     → non itilizatè + kòd PIN (4 chif). Pa gen e-mail, pa gen modpas.
+  //  • "profile" = pwofil sou kont pataje (Netflix) → e-mail kontak (opsyonèl) + non pwofil + modpas / PIN pwofil.
+  //  • "renew"   = renouvle kont ki egziste    → e-mail + modpas kont lan.
   subscription: [
-    { id: "email", label: "f.subEmail", labelByMode: { profile: "f.contactEmail" }, type: "email", required: true, optionalIn: ["profile"] },
+    { id: "email", label: "f.subEmail", labelByMode: { profile: "f.contactEmail" }, type: "email", required: true, optionalIn: ["profile"], modes: ["profile", "renew"] },
     { id: "username", label: "f.subUser", labelByMode: { profile: "f.profileName" }, type: "text", required: true, modes: ["new", "profile"] },
-    { id: "password", label: "f.subPassNew", labelByMode: { new: "f.subPassNew", renew: "f.subPassRenew", profile: "f.profilePin" }, type: "password", required: true },
+    { id: "pin", label: "f.subPin", type: "password", inputmode: "numeric", maxlength: 4, pattern: "[0-9]{4}", patternErr: "co.badPin", required: true, modes: ["new"] },
+    { id: "password", label: "f.subPassRenew", labelByMode: { profile: "f.profilePin" }, type: "password", required: true, modes: ["profile", "renew"] },
   ],
 };
 
@@ -105,7 +107,7 @@ const SUB_PRICES = {
   disney: [[1, 500], [2, 1000], [3, 1500], [6, 3000], [12, 6000]],
 };
 
-// Montan lib pou Méru ak Wise : minimòm 5 $, maksimòm 100 $.
+// Montan lib pou Méru, Wise ak Apple : minimòm 5 $, maksimòm 100 $.
 const CUSTOM_USD = { minUSD: 5, maxUSD: 100, presets: [5, 10, 25, 50, 100] };
 
 // --- Katalòg ---------------------------------------------------------------
@@ -126,9 +128,9 @@ export const PRODUCTS = [
     fields: FIELD_SETS.subscription, modes: SUB_MODES,
     variants: months(SUB_PRICES.disney),
   },
-  // ---- Kat kado (sèlman Netflix ak Visa) ----
+  // ---- Kat kado (Netflix, Visa, Apple) ----
   {
-    id: "netflix-card", kind: "giftcard", name: "Netflix", catKeys: ["cat.gift"], icon: "giftcard", img: "netflix.png",
+    id: "netflix-card", kind: "giftcard", name: "Netflix", catKeys: ["cat.gift"], icon: "giftcard", img: "kadonetflix.jpg",
     fields: FIELD_SETS.giftcard,
     variants: usdCards([15, 25, 50, 100]),
   },
@@ -136,6 +138,12 @@ export const PRODUCTS = [
     id: "visa", kind: "giftcard", name: "Visa", catKeys: ["cat.gift"], icon: "visa", img: null,
     fields: FIELD_SETS.giftcard,
     variants: usdCards([10, 25, 50, 100]),
+  },
+  {
+    id: "apple-card", kind: "giftcard", name: "Apple", catKeys: ["cat.gift"], icon: "giftcard", img: "apple.jpg",
+    fields: FIELD_SETS.giftcard,
+    custom: CUSTOM_USD, // montan lib 5 $ – 100 $
+    variants: [],
   },
   // ---- Jwèt ----
   {
