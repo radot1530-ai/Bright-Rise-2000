@@ -161,9 +161,10 @@ function renderSubs() {
     bar.append(fill);
     const exp = el("div", "sub-exp", t("sub.expiresOn", { date: formatDate(s.expiresAt) }));
     const renew = el("a", "btn ghost", t("sub.renew"));
-    renew.href = s.mode === "profile"
-      ? `checkout.html?product=${encodeURIComponent(s.productId)}&mode=profile&username=${encodeURIComponent(s.username)}`
-      : `checkout.html?product=${encodeURIComponent(s.productId)}&mode=renew&email=${encodeURIComponent(s.email)}`;
+    const pid = encodeURIComponent(s.productId);
+    renew.href = s.mode === "profile" || s.mode === "new"
+      ? `checkout.html?product=${pid}&mode=${s.mode}&username=${encodeURIComponent(s.username)}` // kont san e-mail : non itilizatè
+      : `checkout.html?product=${pid}&mode=renew&email=${encodeURIComponent(s.email)}`;
     card.append(top, time, bar, exp, renew);
     grid.append(card);
     subCards.push({ s, card, pill, time, fill });
