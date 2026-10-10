@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin – Global Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <header class="dash-header">
+    <div class="wrap">
+      <a class="logo" href="dashboard.html">Global Store <span class="adm-tag">Admin</span></a>
+      <div class="topbar-extra">
+        <a class="btn ghost" href="dashboard.html">Dashboard</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="dash-wrap">
+    <div class="empty box" id="gate">Ap verifye aksè…</div>
+
+    <div id="app" hidden>
+      <h1 class="dash-hello">Paj admin</h1>
+      <div class="adm-tabs" id="tabs" role="tablist"></div>
+      <div class="adm-bar">
+        <input id="q" type="search" placeholder="Chèche (e-mail, pwodui, referans…)" autocomplete="off">
+        <div class="chips" id="filters"></div>
+      </div>
+      <div class="adm-list" id="panel"></div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
