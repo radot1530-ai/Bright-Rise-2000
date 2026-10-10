@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bright Rise 2000 – Videyo</title>
+<style>
+  :root{
+    --bg:#171a33; --panel:#20244a; --line:#33397a; --text:#f3f1ea; --muted:#a9acd0; --sun:#ffb938;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{font-family:"Trebuchet MS",Verdana,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+  header{padding:18px 16px 8px;max-width:960px;margin:0 auto}
+  header h1{font-size:1.5rem;letter-spacing:.2px}
+  header p{color:var(--muted);font-size:.95rem}
+  main{max-width:960px;margin:0 auto;padding:8px 16px 40px}
+  .player{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0 12px}
+  video{width:100%;max-height:60vh;background:#000;border-radius:10px;display:block}
+  .now{margin-top:8px;font-weight:bold}
+  .nav{display:flex;gap:8px;margin-top:8px}
+  button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:8px 14px;border-radius:8px}
+  button:hover{border-color:var(--sun)}
+  button:focus-visible,summary:focus-visible{outline:2px solid var(--sun);outline-offset:2px}
+  details{border-bottom:1px solid var(--line)}
+  summary{cursor:pointer;padding:14px 4px;font-weight:bold;list-style:none;display:flex;justify-content:space-between}
+  summary::-webkit-details-marker{display:none}
+  summary span{color:var(--muted);font-weight:normal}
+  .parts{display:flex;flex-wrap:wrap;gap:8px;padding:0 4px 14px}
+  .parts button.active{background:var(--sun);color:#1b1500;border-color:var(--sun);font-weight:bold}
+  #status{color:var(--muted);padding:12px 4px}
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Bright Rise 2000</h1>
+  <p>Chwazi yon modil, epi gade videyo a.</p>
+</header>
+
+<main>
+  <div class="player">
+    <video id="video" controls playsinline preload="metadata"></video>
+    <div class="now" id="now">Okenn videyo poko chwazi</div>
+    <div class="nav">
+      <button id="prev">Anvan</button>
+      <button id="next">Apre</button>
+    </div>
+  </div>
+  <div id="status">Ap chaje videyo yo…</div>
+  <div id="list"></div>
+</main>
+
+<script>
+/* ===== Konfigirasyon ===== */
+var USER = "radot1530-ai";
+var REPO = "Bright-Rise-2000";
+var FOLDER = "image";
+var BRANCHES = ["main", "master"];   // sit la teste yo youn apre lòt
+var FIRST_MODULE = 1, LAST_MODULE = 11;
+var MAX_PARTS = 10;                   // chèche pati .0 rive .9 nan chak modil
+/* ========================== */
+
+var base = "";
+var items = [];      // lis tout videyo yo nan lòd
+var current = -1;
+var video = document.getElementById("video");
+var now = document.getElementById("now");
+var list = document.getElementById("list");
+var statusEl = document.getElementById("status");
+
+function url(name){ return base + name + ".mp4"; }
+
+function exists(u){
+  return fetch(u, {method:"HEAD"}).then(function(r){ return r.ok; }).catch(function(){ return false; });
+}
+
+function findBase(){
+  var i = 0;
+  function tryNext(){
+    if (i >= BRANCHES.length) return Promise.resolve(false);
+    var b = "https://raw.githubusercontent.com/" + USER + "/" + REPO + "/" + BRANCHES[i++] + "/" + FOLDER + "/modil";
+    return exists(b + FIRST_MODULE + ".0.mp4").then(function(ok){
+      if (ok){ base = b; return true; }
+      return tryNext();
+    });
+  }
+  return tryNext();
+}
+
+function scanModule(m){
+  var found = [];
+  function step(p){
+    if (p >= MAX_PARTS) return Promise.resolve(found);
+    return exists(url(m + "." + p)).then(function(ok){
+      if (!ok) return found;
+      found.push({module:m, part:p, name:"modil" + m + "." + p});
+      return step(p + 1);
+    });
+  }
+  return step(0);
+}
+
+function render(groups){
+  list.innerHTML = "";
+  items = [];
+  groups.forEach(function(g){
+    if (!g.length) return;
+    var d = document.createElement("details");
+    var s = document.createElement("summary");
+    s.innerHTML = "Modil " + g[0].module + "<span>" + g.length + " videyo</span>";
+    d.appendChild(s);
+    var box = document.createElement("div");
+    box.className = "parts";
+    g.forEach(function(it){
+      it.index = items.length;
+      items.push(it);
+      var b = document.createElement("button");
+      b.textContent = "Pati " + (it.part + 1) + "  (" + it.module + "." + it.part + ")";
+      b.dataset.i = it.index;
+      b.onclick = function(){ play(it.index, true); };
+      it.btn = b;
+      box.appendChild(b);
+    });
+    d.appendChild(box);
+    list.appendChild(d);
+  });
+}
+
+function play(i, autoplay){
+  if (i < 0 || i >= items.length) return;
+  current = i;
+  var it = items[i];
+  video.src = url(it.module + "." + it.part);
+  now.textContent = "Modil " + it.module + " – Pati " + (it.part + 1);
+  items.forEach(function(x){ x.btn.classList.toggle("active", x.index === i); });
+  var det = it.btn.closest("details");
+  if (det) det.open = true;
+  try { localStorage.setItem("lastVideo", it.name); } catch(e){}
+  if (autoplay) video.play().catch(function(){});
+}
+
+document.getElementById("prev").onclick = function(){ play(current - 1, true); };
+document.getElementById("next").onclick = function(){ play(current + 1, true); };
+video.addEventListener("ended", function(){ play(current + 1, true); });
+
+findBase().then(function(ok){
+  if (!ok){
+    statusEl.textContent = "Mwen pa jwenn videyo yo. Verifye non repo a, dosye /" + FOLDER + " ak non fichye yo (modil1.0.mp4…).";
+    return;
+  }
+  var tasks = [];
+  for (var m = FIRST_MODULE; m <= LAST_MODULE; m++) tasks.push(scanModule(m));
+  return Promise.all(tasks).then(function(groups){
+    render(groups);
+    if (!items.length){ statusEl.textContent = "Pa gen videyo."; return; }
+    statusEl.textContent = items.length + " videyo disponib.";
+    var start = 0;
+    try {
+      var last = localStorage.getItem("lastVideo");
+      items.forEach(function(x){ if (x.name === last) start = x.index; });
+    } catch(e){}
+    play(start, false);
+  });
+});
+</script>
+</body>
+</html>
