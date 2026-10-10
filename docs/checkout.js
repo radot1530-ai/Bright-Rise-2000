@@ -144,7 +144,10 @@ function renderFields() {
 
   $("fieldsWrap").innerHTML = fieldsFor(product, mode).map((f) => {
     const attrs = `id="f_${f.id}" type="${f.type}" ${isRequired(f, mode) ? "required" : ""}` +
-      ` autocomplete="${f.type === "email" ? "email" : f.type === "password" ? "off" : "off"}"` +
+      ` autocomplete="${f.type === "email" ? "email" : "off"}"` +
+      (f.inputmode ? ` inputmode="${f.inputmode}"` : "") +
+      (f.maxlength ? ` maxlength="${f.maxlength}"` : "") +
+      (f.pattern ? ` pattern="${f.pattern}"` : "") +
       (f.id === "identifier" || f.id === "username" || f.type === "email" ? ' autocapitalize="none" spellcheck="false"' : "");
     const input = f.type === "password"
       ? `<div class="pw"><input ${attrs}><button type="button" data-toggle="f_${f.id}"></button></div>`
@@ -167,7 +170,7 @@ function renderNotes() {
   if (!isSub) { $("subNotes").innerHTML = ""; return; }
   $("subNotes").innerHTML = mode === "profile"
     ? `<p class="min-note">${t("sub.profileNote")}</p>`
-    : `<p class="min-note">${t("sub.ownerNote")}</p><p class="min-note">${t("sub.pwNote")}</p>`;
+    : `<p class="min-note">${t("sub.ownerNote")}</p><p class="min-note">${t(mode === "new" ? "sub.pinNote" : "sub.pwNote")}</p>`;
 }
 
 function updateFieldLabels() {
@@ -228,12 +231,13 @@ async function main() {
       const input = $(`f_${f.id}`);
       const value = input.value.trim();
       const badEmail = f.type === "email" && value && !input.validity.valid;
-      if ((isRequired(f, mode) && !value) || badEmail) {
-        say(t("co.fillField", { label: fieldLabel(f, mode) }));
+      const badPattern = f.pattern && value && !new RegExp(`^(?:${f.pattern})$`).test(value);
+      if ((isRequired(f, mode) && !value) || badEmail || badPattern) {
+        say(badPattern ? t(f.patternErr) : t("co.fillField", { label: fieldLabel(f, mode) }));
         input.focus();
         return;
       }
-      fieldValues[f.id] = f.type === "password" ? input.value : value; // modpas la pa koupe
+      fieldValues[f.id] = f.id === "password" ? input.value : value; // modpas la pa koupe
     }
 
     const btn = $("submitBtn");
