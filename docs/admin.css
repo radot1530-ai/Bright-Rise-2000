@@ -1,0 +1,62 @@
+/* ======================================================================
+   Global Store — admin.css  (noir et blanc · mobile-first)
+   Se charge après style.css
+   ====================================================================== */
+
+.adm-tag { margin-left: 8px; padding: 2px 8px; border-radius: 999px; background: #fff; color: #000; font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; vertical-align: middle; }
+
+/* Onglets */
+.adm-tabs { display: flex; gap: 8px; margin: 18px -16px 0; padding: 0 16px 4px; overflow-x: auto; scrollbar-width: none; }
+.adm-tabs::-webkit-scrollbar { display: none; }
+.adm-tabs button { display: inline-flex; align-items: center; gap: 8px; flex: none; min-height: 44px; padding: 0 16px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--mute); font-weight: 700; cursor: pointer; transition: border-color .15s, color .15s; }
+.adm-tabs button:hover { color: var(--text); border-color: var(--accent-2); }
+.adm-tabs button.active { background: #fff; border-color: #fff; color: #000; }
+.adm-badge { min-width: 22px; padding: 1px 7px; border-radius: 999px; background: #fff; color: #000; font-size: .78rem; font-weight: 800; text-align: center; }
+.adm-tabs button.active .adm-badge { background: #000; color: #fff; }
+
+/* Barre de recherche / filtres */
+.adm-bar { display: grid; gap: 12px; margin: 16px 0; }
+.adm-bar .chips { margin-top: 0; }
+
+/* Cartes */
+.adm-list { display: grid; gap: 12px; }
+.adm-card { padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.adm-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.adm-title { font-weight: 800; font-size: 1.05rem; }
+.adm-title small { color: var(--mute); font-weight: 600; font-size: .85rem; margin-left: 6px; }
+.adm-meta { margin-top: 6px; color: var(--mute); font-size: .88rem; overflow-wrap: anywhere; }
+.adm-meta b { color: var(--text); }
+.adm-warn { margin-top: 10px; padding: 8px 12px; border: 1px solid #fff; border-radius: 10px; font-size: .88rem; font-weight: 700; }
+
+.adm-fields { display: grid; gap: 6px; margin: 12px 0 0; }
+.adm-f { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
+.adm-f dt { flex: none; color: var(--mute); font-size: .82rem; }
+.adm-f dd { display: flex; align-items: center; gap: 8px; min-width: 0; margin: 0; font-weight: 700; }
+.adm-f dd span { overflow-wrap: anywhere; text-align: right; }
+
+.adm-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.adm-actions .btn { min-height: 42px; padding: 0 16px; font-size: .92rem; }
+
+.adm-form { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.adm-form label:first-child { margin-top: 0; }
+.adm-form .btn { width: 100%; margin-top: 14px; }
+
+textarea { display: block; width: 100%; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); font-size: 16px; line-height: 1.4; resize: vertical; }
+textarea:focus { outline: none; border-color: var(--accent-2); box-shadow: 0 0 0 3px rgba(255, 255, 255, .18); }
+input[type="date"] { color-scheme: dark; }
+
+.adm-user { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.adm-user .btn { flex: none; min-height: 40px; padding: 0 14px; font-size: .88rem; }
+.adm-bal { font-weight: 800; font-size: 1.1rem; white-space: nowrap; }
+
+.adm-none { padding: 28px 18px; text-align: center; color: var(--mute); border: 1px dashed var(--line); border-radius: var(--radius); }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: calc(20px + var(--safe-b)); z-index: 100; max-width: 90vw; padding: 12px 18px; border-radius: 12px; background: #fff; color: #000; font-weight: 700; transform: translateX(-50%); box-shadow: 0 8px 30px rgba(0, 0, 0, .6); }
+.toast.err { background: #000; color: #fff; border: 1px solid #fff; }
+
+@media (min-width: 900px) {
+  .adm-list { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .adm-bar { grid-template-columns: minmax(260px, 360px) 1fr; align-items: center; }
+  .adm-tabs { margin-inline: 0; padding-inline: 0; }
+}
