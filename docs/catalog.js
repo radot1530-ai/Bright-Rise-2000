@@ -206,11 +206,11 @@ export function cheapestPriceHTG(p) {
 export const PAYMENT_METHODS = [
   {
     id: "moncash", name: "MonCash", sub: "Digicel", img: "moncash.jpg",
-    number: "+509 00 00 0000",
+    number: "Poko disponib",
   },
   {
     id: "natcash", name: "NatCash", sub: "Natcom", img: "natcash.png",
-    number: "Poko disponib ",
+    number: "+509 33 21 5690",
   },
 ];
 
