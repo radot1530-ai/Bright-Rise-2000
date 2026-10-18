@@ -210,7 +210,7 @@ export const PAYMENT_METHODS = [
   },
   {
     id: "natcash", name: "NatCash", sub: "Natcom", img: "natcash.png",
-    number: "+509 00 00 0000",
+    number: "Poko disponib ",
   },
 ];
 
