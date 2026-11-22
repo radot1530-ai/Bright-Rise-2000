@@ -1,42 +1,40 @@
 // ======================================================================
-// Katalòg pataje (pwodui, lajan, mwayen rechaj) — Global Store
-// Itilize pa index.html, dashboard.html ak checkout.html.
+// Catalogue partagé (produits, devises, moyens de recharge) — Global Store
+// Utilisé par index.html, dashboard.html et checkout.html.
 // ======================================================================
-import { t, getLocale } from "./i18n.js";
-
-// --- Taux --------------------------------------------------------------
-export const USD_HTG = 144; // 1 $ = 144 HTG
 
 // --- Devises -----------------------------------------------------------
+// Les prix sont stockés en HTG (gourde haïtienne), la devise de base.
+// "rate" = combien vaut 1 HTG dans cette devise. Taux approximatifs
+// (USD≈130,7 HTG, EUR≈149 HTG, FCFA≈4,40 HTG) — à ajuster régulièrement,
+// par exemple en les remplaçant par un appel à une API de taux de change.
 export const CURRENCIES = {
   HTG: { label: "HTG", name: "Gourde haïtienne", rate: 1, decimals: 0 },
-  USD: { label: "USD", name: "Dollar américain", rate: 1 / USD_HTG, decimals: 2 },
+  USD: { label: "USD", name: "Dollar américain", rate: 1 / 130.7, decimals: 2 },
   EUR: { label: "EUR", name: "Euro", rate: 1 / 149.0, decimals: 2 },
   FCFA: { label: "FCFA", name: "Franc CFA", rate: 4.403, decimals: 0 },
 };
 
 const CURRENCY_KEY = "gs_currency";
-export const getCurrency = () => {
-  try { return localStorage.getItem(CURRENCY_KEY) || "HTG"; } catch { return "HTG"; }
-};
-export const setCurrency = (code) => {
-  try { localStorage.setItem(CURRENCY_KEY, code); } catch {}
-};
+export const getCurrency = () => localStorage.getItem(CURRENCY_KEY) || "HTG";
+export const setCurrency = (code) => localStorage.setItem(CURRENCY_KEY, code);
 
 export function formatPrice(amountHTG, code = getCurrency()) {
   const c = CURRENCIES[code] || CURRENCIES.HTG;
   const value = amountHTG * c.rate;
-  const formatted = new Intl.NumberFormat(getLocale(), {
+  const formatted = new Intl.NumberFormat("fr-FR", {
     minimumFractionDigits: c.decimals,
     maximumFractionDigits: c.decimals,
   }).format(value);
   return `${formatted} ${c.label}`;
 }
 
+// Branche un <select> de devise : affiche la devise active et relance
+// renderFn (reçoit le code devise) à chaque changement.
 export function wireCurrencySelect(selectEl, renderFn) {
   if (!selectEl) return;
   selectEl.innerHTML = Object.entries(CURRENCIES)
-    .map(([code, c]) => `<option value="${code}" title="${c.name}">${c.label}</option>`)
+    .map(([code, c]) => `<option value="${code}">${c.label}</option>`)
     .join("");
   selectEl.value = getCurrency();
   renderFn(getCurrency());
@@ -46,194 +44,168 @@ export function wireCurrencySelect(selectEl, renderFn) {
   });
 }
 
-// --- Icônes (fallback si l'image ne charge pas) ------------------------
+// --- Icônes (SVG maison, pas de logo de marque — voir note plus bas) ---
 export const ICONS = {
-  giftcard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="8" width="18" height="12" rx="1"/><path d="M3 12h18"/><path d="M12 8v12"/><path d="M12 8c-1.5-3-5.5-3-5.5 0S10.5 11 12 8z"/><path d="M12 8c1.5-3 5.5-3 5.5 0S13.5 11 12 8z"/></svg>`,
-  game: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 10v4M5 12h4"/><circle cx="16" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="18.5" cy="14" r="1" fill="currentColor" stroke="none"/></svg>`,
-  wallet: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="17" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>`,
-  card: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/></svg>`,
-  visa: `<svg viewBox="0 0 120 80" aria-hidden="true"><rect width="120" height="80" fill="#fff"/><text x="60" y="52" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="700" font-size="30" fill="#000" letter-spacing="1">VISA</text></svg>`,
+  giftcard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="8" width="18" height="12" rx="1"/><path d="M3 12h18"/><path d="M12 8v12"/><path d="M12 8c-1.5-3-5.5-3-5.5 0S10.5 11 12 8z"/><path d="M12 8c1.5-3 5.5-3 5.5 0S13.5 11 12 8z"/></svg>`,
+  game: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 10v4M5 12h4"/><circle cx="16" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="18.5" cy="14" r="1" fill="currentColor" stroke="none"/></svg>`,
+  wallet: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="17" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>`,
 };
 
-// Rann HTML ikòn nan : imaj lokal la, ak SVG kòm rezèv (CSS kache SVG a si imaj la chaje).
-export const iconHTML = (item, fallbackIcon = "card") =>
-  `${item.img ? `<img src="${item.img}" alt="${item.name}" loading="lazy" decoding="async" onerror="this.remove()">` : ""}${ICONS[item.icon] || ICONS[fallbackIcon]}`;
-
-// --- Chan ki nesesè selon tip pwodui a ---------------------------------
-// label = kle tradiksyon (i18n.js)
+// --- Chan ki nesesè selon tip pwodui a ------------------------------------
+// "giftcard" : sèvis tankou Netflix/Prime — nou bezwen imèl kont lan pou
+// nou ka aplike/rechaje abònman an.
+// "topup" : rechaj nan yon jwèt — nou bezwen ID/UID kont jwè a.
 export const FIELD_SETS = {
   giftcard: [
-    { id: "email", label: "f.email", type: "email", required: true },
-    { id: "note", label: "f.note", type: "text", required: false },
+    { id: "email", label: "E-mail kont lan (pou nou rechaje sèvis la)", type: "email", required: true },
+    { id: "note", label: "Nòt oswa enstriksyon (opsyonèl)", type: "text", required: false },
   ],
   topup: [
-    { id: "playerId", label: "f.playerId", type: "text", required: true },
-    { id: "playerName", label: "f.playerName", type: "text", required: false },
-  ],
-  meru: [
-    { id: "identifier", label: "f.meruId", type: "text", required: true },
-    { id: "note", label: "f.note", type: "text", required: false },
-  ],
-  wise: [
-    { id: "identifier", label: "f.wiseId", type: "text", required: true },
-    { id: "note", label: "f.note", type: "text", required: false },
-  ],
-  // Abònman (Netflix, Prime Video, Disney+). modes = nan ki mòd chan an parèt :
-  //  • "new"     = nouvo kont pèsonèl     → non itilizatè + kòd PIN (4 chif). Pa gen e-mail, pa gen modpas.
-  //  • "profile" = pwofil sou kont pataje (Netflix) → e-mail kontak (opsyonèl) + non pwofil + modpas / PIN pwofil.
-  //  • "renew"   = renouvle kont ki egziste    → e-mail + modpas kont lan.
-  subscription: [
-    { id: "email", label: "f.subEmail", labelByMode: { profile: "f.contactEmail" }, type: "email", required: true, optionalIn: ["profile"], modes: ["profile", "renew"] },
-    { id: "username", label: "f.subUser", labelByMode: { profile: "f.profileName" }, type: "text", required: true, modes: ["new", "profile"] },
-    { id: "pin", label: "f.subPin", type: "password", inputmode: "numeric", maxlength: 4, pattern: "[0-9]{4}", patternErr: "co.badPin", required: true, modes: ["new"] },
-    { id: "password", label: "f.subPassRenew", labelByMode: { profile: "f.profilePin" }, type: "password", required: true, modes: ["profile", "renew"] },
+    { id: "playerId", label: "ID / UID kont jwèt la", type: "text", required: true },
+    { id: "playerName", label: "Non itilizatè nan jwèt la (opsyonèl)", type: "text", required: false },
   ],
 };
-
-export const SUB_MODES = ["new", "renew"];
-export const SUB_MODES_NETFLIX = ["profile", "new", "renew"]; // Netflix : yon kont ka gen plizyè pwofil
-
-// --- Pake yo -------------------------------------------------------------
-const usd = (n) => Math.round(n * USD_HTG);
-const months = (list) => list.map(([n, priceHTG]) => ({ id: `${n}m`, group: "sub", type: "months", n, priceHTG }));
-const usdCards = (list) => list.map((n) => ({ id: `${n}usd`, group: "gift", type: "usd", amount: n, priceHTG: usd(n) }));
-const raw = (list) => list.map(([id, label, priceHTG]) => ({ id, type: "raw", label, priceHTG }));
-
-// Pri abònman pa mwa an HTG : [mwa, pri].
-// ⚠ Prime Video ak Disney+ : pri PWOVIZWA (menm ak Netflix). Chanje yo isit la.
-const SUB_PRICES = {
-  netflix: [[1, 500], [2, 1000], [3, 1500], [6, 3000], [12, 6000]],
-  primeVideo: [[1, 500], [2, 1000], [3, 1500], [6, 3000], [12, 6000]],
-  disney: [[1, 500], [2, 1000], [3, 1500], [6, 3000], [12, 6000]],
-};
-
-// Montan lib pou Méru, Wise ak Apple : minimòm 5 $, maksimòm 100 $.
-const CUSTOM_USD = { minUSD: 5, maxUSD: 100, presets: [5, 10, 25, 50, 100] };
 
 // --- Katalòg ---------------------------------------------------------------
+// Chak pwodui gen plizyè "variants" (pa gen yon sèl pri fiks) :
+// { id, label, priceHTG }. Pri yo isit la se egzanp — ajiste yo selon
+// founisè w. Pou kat kado (Netflix, Prime), pi piti pri a dwe omwen
+// ekivalan 15 $ US (règ magazen an) ; pou rechaj jwèt yo, pi piti pake a
+// chwazi espre pou li pa twò piti.
+//
+// NOTE SOU IMAJ YO : "img" vid pa default — yon icon fèt pa nou menm
+// (san logo mak depoze) parèt nan plas li, pou nou pa itilize logo ofisyèl
+// Netflix/PUBG/elatriye san otorizasyon. Pou mete vrè logo a, ebèje imaj la
+// (sou Firebase Storage pa egzanp, oswa yon lòt CDN ou gen dwa itilize) epi
+// kole lyen https:// li nan "img", pa egzanp :
+//   img: "https://firebasestorage.googleapis.com/.../netflix.png"
 export const PRODUCTS = [
-  // ---- Abònman (pa mwa) — kat kado yo apa pi ba a ----
   {
-    id: "netflix", kind: "subscription", name: "Netflix", catKeys: ["cat.sub"], icon: "card", img: "netflix.png",
-    fields: FIELD_SETS.subscription, modes: SUB_MODES_NETFLIX,
-    variants: months(SUB_PRICES.netflix),
-  },
-  {
-    id: "prime-video", kind: "subscription", name: "Prime Video", catKeys: ["cat.sub"], icon: "card", img: "primevideo.jpg",
-    fields: FIELD_SETS.subscription, modes: SUB_MODES,
-    variants: months(SUB_PRICES.primeVideo),
-  },
-  {
-    id: "disney", kind: "subscription", name: "Disney+", catKeys: ["cat.sub"], icon: "card", img: "disney.png",
-    fields: FIELD_SETS.subscription, modes: SUB_MODES,
-    variants: months(SUB_PRICES.disney),
-  },
-  // ---- Kat kado (Netflix, Visa, Apple) ----
-  {
-    id: "netflix-card", kind: "giftcard", name: "Netflix", catKeys: ["cat.gift"], icon: "giftcard", img: "kadonetflix.jpg",
+    id: "netflix", name: "Netflix", cat: "Kont personèl", icon: "giftcard", img: "",
     fields: FIELD_SETS.giftcard,
-    variants: usdCards([15, 25, 50, 100]),
+    variants: [
+      { id: "1m", label: "1 mwa", priceHTG: 1300 },
+      { id: "2m", label: "2 mwa", priceHTG: 2300 },
+      { id: "3m", label: "3 mwa", priceHTG: 3500 },
+    ],
   },
   {
-    id: "visa", kind: "giftcard", name: "Visa", catKeys: ["cat.gift"], icon: "visa", img: null,
+    id: "disney", name: "Disney+", cat: "Kont personèl", icon: "giftcard", img: "",
     fields: FIELD_SETS.giftcard,
-    variants: usdCards([10, 25, 50, 100]),
+    variants: [
+      { id: "1m", label: "1 mwa", priceHTG: 1300 },
+      { id: "2m", label: "2 mwa", priceHTG: 2300 },
+      { id: "3m", label: "3 mwa", priceHTG: 3500 },
+    ],
   },
   {
-    id: "apple-card", kind: "giftcard", name: "Apple", catKeys: ["cat.gift"], icon: "giftcard", img: "apple.jpg",
+    id: "prime-video", name: "Prime Video", cat: "Kat kado", icon: "giftcard", img: "",
     fields: FIELD_SETS.giftcard,
-    custom: CUSTOM_USD, // montan lib 5 $ – 100 $
-    variants: [],
+    // Minimòm 15 $ US pou kat kado yo — konvèti an HTG ak CURRENCIES.USD.rate.
+    variants: [
+      { id: "15usd", label: "15 $", priceHTG: Math.round(15 / CURRENCIES.USD.rate) },
+      { id: "20usd", label: "20 $", priceHTG: Math.round(20 / CURRENCIES.USD.rate) },
+      { id: "25usd", label: "25 $", priceHTG: Math.round(25 / CURRENCIES.USD.rate) },
+      { id: "50usd", label: "50 $", priceHTG: Math.round(50 / CURRENCIES.USD.rate) },
+      { id: "100usd", label: "100 $", priceHTG: Math.round(100 / CURRENCIES.USD.rate) },
+    ],
   },
-  // ---- Jwèt ----
   {
-    id: "free-fire", kind: "topup", name: "Free Fire", catKeys: ["cat.diamonds"], icon: "game", img: "freefire.jpg",
+    id: "free-fire", name: "Free Fire", cat: "Diamants", icon: "game", img: "",
     fields: FIELD_SETS.topup,
-    variants: raw([["100", "100 💎", 150], ["310", "310 💎", 450], ["520", "520 💎", 750], ["1060", "1060 💎", 1500]]),
+    variants: [
+      { id: "110", label: "110 💎", priceHTG: 160 },
+      { id: "210", label: "210 💎", priceHTG: 320 },
+      { id: "341", label: "341 💎", priceHTG: 480 },
+      // TODO: ajoute pake yo ki ant 341 💎 ak 5600 💎 lè w gen pri yo.
+      { id: "5600", label: "5600 + 560 💎", priceHTG: 8000 },
+    ],
   },
   {
-    id: "pubg", kind: "topup", name: "PUBG", catKeys: ["cat.uc"], icon: "game", img: "pubg.jpg",
+    id: "pubg", name: "PUBG", cat: "UC", icon: "game", img: "",
     fields: FIELD_SETS.topup,
-    variants: raw([["60", "60 UC", 150], ["325", "325 UC", 750], ["660", "660 UC", 1500], ["1800", "1800 UC", 3750]]),
+    variants: [
+      { id: "60", label: "60 UC", priceHTG: 150 },
+      { id: "325", label: "325 UC", priceHTG: 750 },
+      { id: "660", label: "660 UC", priceHTG: 1500 },
+      { id: "1800", label: "1800 UC", priceHTG: 3750 },
+    ],
   },
   {
-    id: "efootball", kind: "topup", name: "eFootball", catKeys: ["cat.coins"], icon: "game", img: "efootball.png",
+    id: "efootball", name: "eFootball", cat: "Coins", icon: "game", img: "",
     fields: FIELD_SETS.topup,
-    variants: raw([["125", "125 coins", 150], ["250", "250 coins", 300], ["525", "525 coins", 600], ["1050", "1050 coins", 1150]]),
+    variants: [
+      { id: "125", label: "125 coins", priceHTG: 150 },
+      { id: "250", label: "250 coins", priceHTG: 300 },
+      { id: "525", label: "525 coins", priceHTG: 600 },
+      { id: "1050", label: "1050 coins", priceHTG: 1150 },
+    ],
   },
   {
-    id: "dls", kind: "topup", name: "DLS", catKeys: ["cat.diamonds"], icon: "game", img: "dls.jpg",
+    id: "dls", name: "DLS", cat: "Diamants", icon: "game", img: "",
     fields: FIELD_SETS.topup,
-    variants: raw([["140", "140 💎", 150], ["300", "300 💎", 300], ["700", "700 💎", 650]]),
-  },
-  // ---- Pòtfèy (montan lib 5 $ – 100 $) ----
-  {
-    id: "meru", kind: "wallet", name: "Méru", catKeys: ["cat.topup"], icon: "wallet", img: "meru.png",
-    fields: FIELD_SETS.meru,
-    custom: CUSTOM_USD,
-    variants: [],
+    variants: [
+      { id: "140", label: "140 💎", priceHTG: 150 },
+      { id: "300", label: "300 💎", priceHTG: 300 },
+      { id: "700", label: "700 💎", priceHTG: 650 },
+    ],
   },
   {
-    id: "wise", kind: "wallet", name: "Wise", catKeys: ["cat.topup"], icon: "wallet", img: "wise.jpg",
-    fields: FIELD_SETS.wise,
-    custom: CUSTOM_USD,
-    variants: [],
+    id: "meru", name: "Méru", cat: "Recharge", icon: "game", img: "",
+    fields: FIELD_SETS.topup,
+    variants: [
+      { id: "petit", label: "Pake Piti", priceHTG: 150 },
+      { id: "moyen", label: "Pake Mwayen", priceHTG: 300 },
+      { id: "gwo", label: "Pake Gwo", priceHTG: 600 },
+    ],
   },
 ];
 
 export const getProduct = (id) => PRODUCTS.find((p) => p.id === id);
-// Chan ki aplike selon mòd la (nouvo kont / renouvle) ak etikèt li.
-export const fieldsFor = (p, mode) => p.fields.filter((f) => !f.modes || !p.modes || f.modes.includes(mode));
-export const isRequired = (f, mode) => !!f.required && !(f.optionalIn || []).includes(mode);
-export const fieldLabel = (f, mode) => t(f.labelByMode?.[mode] || f.label);
-
-export const catLabel = (p) => p.catKeys.map((k) => t(k)).join(" · ");
-
-export function variantLabel(v, lang) {
-  if (v.type === "months") return t(v.n === 1 ? "v.month.one" : "v.month.other", { n: v.n }, lang);
-  if (v.type === "usd") return `${v.amount} $`;
-  return v.label;
-}
-
-export const customPriceHTG = (amountUSD) => Math.round(amountUSD * USD_HTG);
-
-export function cheapestPriceHTG(p) {
-  if (p.custom) return customPriceHTG(p.custom.minUSD);
-  return Math.min(...p.variants.map((v) => v.priceHTG));
-}
+export const cheapestVariant = (p) => p.variants.reduce((a, b) => (a.priceHTG < b.priceHTG ? a : b));
 
 // --- Moyens de recharge du solde -----------------------------------------
+// Même règle pour "img" que pour les produits : vide par défaut, une icône
+// maison est utilisée ; colle l'URL du vrai logo si tu as le droit de l'utiliser.
 export const PAYMENT_METHODS = [
   {
-    id: "moncash", name: "MonCash", sub: "Digicel", img: "moncash.jpg",
-    number: "Poko disponib",
+    id: "moncash",
+    name: "MonCash",
+    sub: "Digicel",
+    img: "",
+    number: "+509 00 00 0000", // ranplase ak vrè nimewo MonCash biznis ou
+    instructions: "Voye montan an sou nimewo MonCash Global Store anwo a, epi ranpli fòmilè a avèk enfòmasyon tranzaksyon an.",
   },
   {
-    id: "natcash", name: "NatCash", sub: "Natcom", img: "natcash.png",
-    number: "+509 33 21 5690",
+    id: "natcash",
+    name: "NatCash",
+    sub: "Natcom",
+    img: "",
+    number: "+509 00 00 0000", // ranplase ak vrè nimewo NatCash biznis ou
+    instructions: "Voye montan an sou nimewo NatCash Global Store anwo a, epi ranpli fòmilè a avèk enfòmasyon tranzaksyon an.",
   },
 ];
 
 // --- Rendu du catalogue en grille -----------------------------------------
+// container: élément DOM. hrefFor(product): string — lien de la carte.
 export function renderProducts(container, currencyCode, hrefFor) {
   container.innerHTML = PRODUCTS.map((p) => `
     <a class="product-card" href="${hrefFor(p)}">
-      <span class="product-icon">${iconHTML(p)}</span>
-      <span class="product-body">
-        <span class="product-name">${p.name}</span>
-        <span class="product-cat">${catLabel(p)}</span>
-        <span class="product-price">${t("product.from")} ${formatPrice(cheapestPriceHTG(p), currencyCode)}</span>
-      </span>
+      <span class="product-icon">${p.img ? `<img src="${p.img}" alt="${p.name}">` : ICONS[p.icon] || ""}</span>
+      <span class="product-name">${p.name}</span>
+      <span class="product-cat">${p.cat}</span>
+      <span class="product-price">Depi ${formatPrice(cheapestVariant(p).priceHTG, currencyCode)}</span>
     </a>`).join("");
 }
 
 // --- Rendu des moyens de recharge -----------------------------------------
+// container: élément DOM. onSelect(method): appelé au clic sur une carte.
 export function renderPaymentMethods(container, onSelect) {
   container.innerHTML = PAYMENT_METHODS.map((m) => `
     <button class="pay-card" data-id="${m.id}" type="button">
-      <span class="pay-icon">${iconHTML(m, "wallet")}</span>
-      <span class="pay-text">
-        <span class="pay-name">${m.name}</span>
+      <span class="pay-icon">${m.img ? `<img src="${m.img}" alt="${m.name}">` : ICONS.wallet}</span>
+      <span>
+        <span class="pay-name">${m.name}</span><br>
         <span class="pay-sub">${m.sub}</span>
       </span>
     </button>`).join("");
@@ -241,16 +213,8 @@ export function renderPaymentMethods(container, onSelect) {
     btn.addEventListener("click", () => {
       container.querySelectorAll(".pay-card").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
-      onSelect(PAYMENT_METHODS.find((m) => m.id === btn.dataset.id));
+      const method = PAYMENT_METHODS.find((m) => m.id === btn.dataset.id);
+      onSelect(method);
     });
-  });
-}
-
-// --- Bouton "Kopye" ---------------------------------------------------------
-export function wireCopy(btn, getText) {
-  btn.addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(getText()); } catch { return; }
-    btn.textContent = t("common.copied");
-    setTimeout(() => { btn.textContent = t("common.copy"); }, 1500);
   });
 }
