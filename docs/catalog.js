@@ -104,7 +104,7 @@ const raw = (list) => list.map(([id, label, priceHTG]) => ({ id, type: "raw", la
 // ⚠ Prime Video : pri PWOVIZWA. Chanje yo isit la.
 const SUB_PRICES = {
   netflix: [[1, 1300], [2, 2300], [3, 3500]],
-  primeVideo: [[1, 500], [2, 1000], [3, 1500], [6, 3000], [12, 6000]],
+  primeVideo: [[1, 450], [2, 900], [3, 1350], [6, 2700], [12, 5400]],
   disney: [[1, 1300], [2, 2300], [3, 3500]],
 };
 
