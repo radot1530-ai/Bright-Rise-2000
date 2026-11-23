@@ -91,7 +91,7 @@ export const FIELD_SETS = {
 };
 
 export const SUB_MODES = ["new", "renew"];
-export const SUB_MODES_NETFLIX = ["profile", "new", "renew"]; // Netflix : yon kont ka gen plizyè pwofil
+export const SUB_MODES_NETFLIX = ["profile", "new", "renew"]; // Netflix ak Disney+ : kont pataje (profile) + kont pèsonèl (new, renew)
 
 // --- Pake yo -------------------------------------------------------------
 const usd = (n) => Math.round(n * USD_HTG);
@@ -100,13 +100,38 @@ const usdCards = (list) => list.map((n) => ({ id: `${n}usd`, group: "gift", type
 const raw = (list) => list.map(([id, label, priceHTG]) => ({ id, type: "raw", label, priceHTG }));
 
 // Pri abònman pa mwa an HTG : [mwa, pri].
-// Netflix ak Disney+ (kont pèsonèl) : 1 mwa 1300, 2 mwa 2300, 3 mwa 3500.
+// Netflix ak Disney+ gen de kategori :
+//  • personal = kont pèsonèl (mòd "new" ak "renew") → 1 mwa 1300, 2 mwa 2300, 3 mwa 3500
+//  • shared   = kont pataje  (mòd "profile")         → pri yo pa chanje
 // ⚠ Prime Video : pri PWOVIZWA. Chanje yo isit la.
+const PERSONAL_MODES = ["new", "renew"];
+const SHARED_MODES = ["profile"];
+const SHARED_PRICES = [[1, 500], [2, 1000], [3, 1500], [6, 3000], [12, 6000]];
 const SUB_PRICES = {
-  netflix: [[1, 1300], [2, 2300], [3, 3500]],
+  netflix: { personal: [[1, 1300], [2, 2300], [3, 3500]], shared: SHARED_PRICES },
+  disney: { personal: [[1, 1300], [2, 2300], [3, 3500]], shared: SHARED_PRICES },
   primeVideo: [[1, 450], [2, 900], [3, 1350], [6, 2700], [12, 5400]],
-  disney: [[1, 1300], [2, 2300], [3, 3500]],
 };
+
+// Bati pake abònman yo pou de kategori : chak pake gen yon pri pa mòd (priceByMode)
+// ak lis mòd kote li disponib (modes). Si yon durée egziste nan yon sèl kategori,
+// li pa parèt nan lòt la. priceHTG = pri default (kont pèsonèl si li egziste).
+function monthsByMode({ personal, shared }) {
+  const counts = [...new Set([...personal, ...shared].map(([n]) => n))].sort((a, b) => a - b);
+  return counts.map((n) => {
+    const p = personal.find(([m]) => m === n);
+    const s = shared.find(([m]) => m === n);
+    const priceByMode = {};
+    if (p) PERSONAL_MODES.forEach((m) => { priceByMode[m] = p[1]; });
+    if (s) SHARED_MODES.forEach((m) => { priceByMode[m] = s[1]; });
+    return {
+      id: `${n}m`, group: "sub", type: "months", n,
+      priceHTG: (p || s)[1],
+      priceByMode,
+      modes: Object.keys(priceByMode),
+    };
+  });
+}
 
 // Montan lib pou Méru, Wise ak Apple : minimòm 5 $, maksimòm 100 $.
 const CUSTOM_USD = { minUSD: 5, maxUSD: 100, presets: [5, 10, 25, 50, 100] };
@@ -117,7 +142,7 @@ export const PRODUCTS = [
   {
     id: "netflix", kind: "subscription", name: "Netflix", catKeys: ["cat.sub"], icon: "card", img: "netflix.png",
     fields: FIELD_SETS.subscription, modes: SUB_MODES_NETFLIX,
-    variants: months(SUB_PRICES.netflix),
+    variants: monthsByMode(SUB_PRICES.netflix),
   },
   {
     id: "prime-video", kind: "subscription", name: "Prime Video", catKeys: ["cat.sub"], icon: "card", img: "primevideo.jpg",
@@ -126,8 +151,8 @@ export const PRODUCTS = [
   },
   {
     id: "disney", kind: "subscription", name: "Disney+", catKeys: ["cat.sub"], icon: "card", img: "disney.png",
-    fields: FIELD_SETS.subscription, modes: SUB_MODES,
-    variants: months(SUB_PRICES.disney),
+    fields: FIELD_SETS.subscription, modes: SUB_MODES_NETFLIX, // kont pataje + pèsonèl, tankou Netflix
+    variants: monthsByMode(SUB_PRICES.disney),
   },
   // ---- Kat kado (Netflix, Visa, Apple) ----
   {
@@ -147,7 +172,7 @@ export const PRODUCTS = [
     variants: [],
   },
   // ---- Jwèt ----
-  // Free Fire : pri yo bay pa itilizatè a. Paliye entèmedyè yo (ant 341 ak 5600) poko ajoute.
+  // Free Fire : pri yo bay pa itilizatè a.
   {
     id: "free-fire", kind: "topup", name: "Free Fire", catKeys: ["cat.diamonds"], icon: "game", img: "freefire.jpg",
     fields: FIELD_SETS.topup,
@@ -155,6 +180,9 @@ export const PRODUCTS = [
       ["110", "110 💎", 160],
       ["210", "210 💎", 320],
       ["341", "341 💎", 480],
+      ["520", "520 + 52 💎", 800],
+      ["1060", "1060 + 106 💎", 1600],
+      ["2180", "2180 + 218 💎", 3200],
       ["5600", "5600 + 560 💎", 8000],
     ]),
   },
@@ -204,9 +232,15 @@ export function variantLabel(v, lang) {
 
 export const customPriceHTG = (amountUSD) => Math.round(amountUSD * USD_HTG);
 
+// Pri yon pake selon mòd la (kont pèsonèl / pataje). Si pa gen priceByMode, se priceHTG.
+export const variantPriceHTG = (v, mode) => v.priceByMode?.[mode] ?? v.priceHTG;
+// Pake ki disponib nan yon mòd (si mòd la pa bay, tout pake yo).
+export const variantsFor = (p, mode) => p.variants.filter((v) => !mode || !v.modes || v.modes.includes(mode));
+
 export function cheapestPriceHTG(p) {
   if (p.custom) return customPriceHTG(p.custom.minUSD);
-  return Math.min(...p.variants.map((v) => v.priceHTG));
+  const prices = (v) => (v.priceByMode ? Object.values(v.priceByMode) : [v.priceHTG]);
+  return Math.min(...p.variants.flatMap(prices));
 }
 
 // --- Moyens de recharge du solde -----------------------------------------
