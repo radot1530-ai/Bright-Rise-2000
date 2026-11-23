@@ -73,6 +73,15 @@ const who = (uid, fallback) => {
 };
 const methodName = (id) => PAYMENT_METHODS.find((m) => m.id === id)?.name || id || "—";
 
+// Tès aksè a nan paj la (se sèlman pou montre/kache paj la : vrè pwoteksyon an se firestore.rules).
+// Li aksepte "admin", "Admin", " ADMIN " elatriye, yon lis roles, oswa admin/isAdmin = true.
+const isAdminDoc = (d) => {
+  if (!d) return false;
+  if (typeof d.role === "string" && d.role.trim().toLowerCase() === "admin") return true;
+  if (Array.isArray(d.roles) && d.roles.some((r) => String(r).trim().toLowerCase() === "admin")) return true;
+  return d.isAdmin === true || d.admin === true;
+};
+
 function expectedHTG(o) {
   const p = getProduct(o.productId);
   if (!p) return null;
@@ -199,7 +208,7 @@ function renderUsers() {
     .sort((a, b) => (Number(b.balance) || 0) - (Number(a.balance) || 0));
   $("panel").innerHTML = rows.length ? rows.map((u) => `<article class="adm-card adm-user">
     <div>
-      <div class="adm-title">${esc(u.email || `uid:${u.uid.slice(0, 8)}`)}${u.role === "admin" ? `<small>admin</small>` : ""}</div>
+      <div class="adm-title">${esc(u.email || `uid:${u.uid.slice(0, 8)}`)}${isAdminDoc(u) ? `<small>admin</small>` : ""}</div>
       <div class="adm-meta">${esc(u.displayName || "—")}</div>
     </div>
     <div style="text-align:right">
@@ -405,13 +414,35 @@ async function main() {
     if (!user) { location.href = "connexion.html"; return; }
     me = user;
 
+    // Verifikasyon admin : kounye a li di poukisa li refize (olye li kache erè a).
     let isAdmin = false;
+    let reason = "";
     try {
-      const snap = await F.getDoc(F.doc(db, "users", user.uid));
-      isAdmin = snap.exists() && snap.data().role === "admin";
-    } catch {}
+      const ref = F.doc(db, "users", user.uid);
+      let snap;
+      try {
+        snap = await F.getDocFromServer(ref); // done fre, pa kach lokal
+      } catch (e) {
+        if (e?.code === "permission-denied") throw e;
+        snap = await F.getDoc(ref); // rezo ofline : eseye ak kach la
+      }
+      if (!snap.exists()) {
+        reason = "Pa gen dokiman users/<uid> pou kont sa a nan Firestore.";
+      } else if (!isAdminDoc(snap.data())) {
+        reason = `Dokiman an egziste, men pa gen role admin (role = ${JSON.stringify(snap.data().role ?? null)}).`;
+      } else {
+        isAdmin = true;
+      }
+    } catch (err) {
+      console.error(err);
+      reason = err?.code === "permission-denied"
+        ? "Règ Firestore yo bloke lekti dokiman users/<uid> ou a (permission-denied)."
+        : `Erè : ${err?.code || err?.message || "enkoni"}`;
+    }
+
     if (!isAdmin) {
-      $("gate").innerHTML = `Aksè refize. Sèlman yon admin ka wè paj sa a. <a href="dashboard.html">Retounen nan dashboard la</a>.`;
+      $("gate").innerHTML = `Aksè refize. Sèlman yon admin ka wè paj sa a. <a href="dashboard.html">Retounen nan dashboard la</a>.
+        <br><small>${esc(reason)}<br>UID : ${esc(user.uid)}${user.email ? ` · ${esc(user.email)}` : ""}</small>`;
       return;
     }
 
